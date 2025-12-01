@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateProfEmail } from '../services/geminiService';
-import { Mail, Copy, Loader2, Send } from 'lucide-react';
+import { Mail, Copy, Loader2, Send, Zap, Share2 } from 'lucide-react';
 
 interface EmailWizardProps {
     lang: Language;
@@ -15,17 +16,38 @@ const EmailWizard: React.FC<EmailWizardProps> = ({ lang }) => {
     const [desperation, setDesperation] = useState(0); // 0 to 100
     const [generatedEmail, setGeneratedEmail] = useState('');
     const [loading, setLoading] = useState(false);
+    const [contentLang, setContentLang] = useState<'en' | 'ar'>('en');
 
     const handleGenerate = async () => {
         if (!topic) return;
         setLoading(true);
-        const email = await generateProfEmail(topic, recipient || (lang === 'ar' ? 'الدكتور' : 'Professor'), desperation);
+        const email = await generateProfEmail(topic, recipient || (lang === 'ar' ? 'الدكتور' : 'Professor'), desperation, contentLang);
         setGeneratedEmail(email);
         setLoading(false);
     };
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(generatedEmail);
+    };
+
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Student Email Draft',
+                    text: generatedEmail,
+                });
+            } catch (err) {
+                console.log('Error sharing', err);
+            }
+        } else {
+            copyToClipboard();
+        }
+    };
+
+    const applyTemplate = (tempTopic: string, tempDesperation: number) => {
+        setTopic(tempTopic);
+        setDesperation(tempDesperation);
     };
 
     return (
@@ -35,6 +57,32 @@ const EmailWizard: React.FC<EmailWizardProps> = ({ lang }) => {
                     <Mail size={24} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800">{t.emailWizard}</h3>
+            </div>
+
+            <div className="mb-6">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-1 mb-2">
+                    <Zap size={12} /> {t.quickTemplates}
+                </span>
+                <div className="flex gap-2 flex-wrap">
+                    <button 
+                        onClick={() => applyTemplate(lang === 'ar' ? 'إجازة مرضية بسبب انفلونزا شديدة' : 'Sick leave due to severe flu', 20)}
+                        className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-xs font-bold text-gray-700 transition"
+                    >
+                        {t.templateSick}
+                    </button>
+                    <button 
+                        onClick={() => applyTemplate(lang === 'ar' ? 'مراجعة ورقة الامتحان الأول' : 'Review first exam paper', 50)}
+                        className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-xs font-bold text-gray-700 transition"
+                    >
+                        {t.templateGrade}
+                    </button>
+                    <button 
+                        onClick={() => applyTemplate(lang === 'ar' ? 'طلب تمديد موعد تسليم الواجب' : 'Request assignment deadline extension', 80)}
+                        className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-xs font-bold text-gray-700 transition"
+                    >
+                        {t.templateExtension}
+                    </button>
+                </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -76,6 +124,24 @@ const EmailWizard: React.FC<EmailWizardProps> = ({ lang }) => {
                 <p className="text-center text-xs text-gray-400 mt-1">{t.emailTone}: {desperation}%</p>
             </div>
 
+            <div className="mb-6">
+                <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">{t.contentLang}</label>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={() => setContentLang('en')}
+                        className={`flex-1 py-2 rounded-lg text-sm font-bold border transition ${contentLang === 'en' ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200'}`}
+                    >
+                        English
+                    </button>
+                    <button 
+                        onClick={() => setContentLang('ar')}
+                        className={`flex-1 py-2 rounded-lg text-sm font-bold border transition ${contentLang === 'ar' ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200'}`}
+                    >
+                        العربية
+                    </button>
+                </div>
+            </div>
+
             <button 
                 onClick={handleGenerate}
                 disabled={loading || !topic}
@@ -87,13 +153,23 @@ const EmailWizard: React.FC<EmailWizardProps> = ({ lang }) => {
 
             {generatedEmail && (
                 <div className="mt-6 bg-gray-50 p-4 rounded-xl border border-gray-200 relative animate-fade-in">
-                    <button 
-                        onClick={copyToClipboard}
-                        className="absolute top-3 right-3 rtl:right-auto rtl:left-3 text-gray-400 hover:text-student-blue"
-                    >
-                        <Copy size={20} />
-                    </button>
-                    <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed text-sm md:text-base">
+                    <div className="absolute top-3 right-3 rtl:right-auto rtl:left-3 flex gap-2">
+                         <button 
+                            onClick={handleShare}
+                            className="text-gray-400 hover:text-green-600 transition"
+                            title={t.share}
+                        >
+                            <Share2 size={20} />
+                        </button>
+                        <button 
+                            onClick={copyToClipboard}
+                            className="text-gray-400 hover:text-student-blue transition"
+                            title={t.copyText}
+                        >
+                            <Copy size={20} />
+                        </button>
+                    </div>
+                    <pre className={`whitespace-pre-wrap font-sans text-gray-700 leading-relaxed text-sm md:text-base ${contentLang === 'ar' ? 'text-right font-arabic' : 'text-left'}`}>
                         {generatedEmail}
                     </pre>
                 </div>

@@ -1,43 +1,172 @@
 
-import { University, QuizQuestion, BingoCell, SurvivalTip, Sticker, FoodItem } from './types';
 
+import { University, QuizQuestion, BingoCell, SurvivalTip, Sticker, FoodItem, Translation, UniServices } from './types';
+
+// Using Clearbit Logo API with official domains for real logos
 export const UNIVERSITIES: University[] = [
-  { id: 'just', nameEn: 'Jordan University of Science and Technology (JUST)', nameAr: 'جامعة العلوم والتكنولوجيا الأردنية' },
-  { id: 'uj', nameEn: 'University of Jordan (UJ)', nameAr: 'الجامعة الأردنية' },
-  { id: 'yu', nameEn: 'Yarmouk University', nameAr: 'جامعة اليرموك' },
-  { id: 'hu', nameEn: 'Hashemite University', nameAr: 'الجامعة الهاشمية' },
-  { id: 'bau', nameEn: 'Al-Balqa Applied University', nameAr: 'جامعة البلقاء التطبيقية' },
-  { id: 'mutah', nameEn: 'Mutah University', nameAr: 'جامعة مؤتة' },
-  { id: 'aau', nameEn: 'Al-Ahliyya Amman University', nameAr: 'جامعة عمان الأهلية' },
+  { id: 'just', nameEn: 'Jordan University of Science and Technology', nameAr: 'جامعة العلوم والتكنولوجيا', logo: 'https://logo.clearbit.com/just.edu.jo' },
+  { id: 'uj', nameEn: 'University of Jordan', nameAr: 'الجامعة الأردنية', logo: 'https://logo.clearbit.com/ju.edu.jo' },
+  { id: 'yu', nameEn: 'Yarmouk University', nameAr: 'جامعة اليرموك', logo: 'https://logo.clearbit.com/yu.edu.jo' },
+  { id: 'hu', nameEn: 'Hashemite University', nameAr: 'الجامعة الهاشمية', logo: 'https://logo.clearbit.com/hu.edu.jo' },
+  { id: 'bau', nameEn: 'Al-Balqa Applied University', nameAr: 'جامعة البلقاء التطبيقية', logo: 'https://logo.clearbit.com/bau.edu.jo' },
+  { id: 'mutah', nameEn: 'Mutah University', nameAr: 'جامعة مؤتة', logo: 'https://logo.clearbit.com/mutah.edu.jo' },
+  { id: 'aau', nameEn: 'Al-Ahliyya Amman University', nameAr: 'جامعة عمان الأهلية', logo: 'https://logo.clearbit.com/amman.edu.jo' },
+  { id: 'psut', nameEn: 'Princess Sumaya University', nameAr: 'جامعة الأميرة سمية', logo: 'https://logo.clearbit.com/psut.edu.jo' },
+  { id: 'zuj', nameEn: 'Al-Zaytoonah University', nameAr: 'جامعة الزيتونة', logo: 'https://logo.clearbit.com/zuj.edu.jo' },
 ];
 
-export const INITIAL_BINGO: BingoCell[] = [
-  { id: 1, textEn: "Late to 8 AM lecture", textAr: "تأخرت على محاضرة الـ ٨", checked: false },
-  { id: 2, textEn: "Forgot University ID", textAr: "نسيت الهوية الجامعية", checked: false },
-  { id: 3, textEn: "Ate Mansaf & Slept", textAr: "ضربت منسف ونمت", checked: false },
-  { id: 4, textEn: "Professor cancelled class", textAr: "الدكتور لغى المحاضرة", checked: false },
-  { id: 5, textEn: "Begged for grades", textAr: "تشحد علامات", checked: false },
-  { id: 6, textEn: "Lost in Engineering Bldg", textAr: "ضعت بمبنى الهندسة", checked: false },
-  { id: 7, textEn: "Drank 3+ Coffees", textAr: "شربت ٣ قهاوي وفوق", checked: false },
-  { id: 8, textEn: "Used 'Ya Zame' 50 times", textAr: "حكيت 'يا زلمة' ٥٠ مرة", checked: false },
-  { id: 9, textEn: "Broke (End of month)", textAr: "مفلس (اخر الشهر)", checked: false },
-  { id: 10, textEn: "Bus broke down", textAr: "الباص تعطل", checked: false },
-  { id: 11, textEn: "Pretended to take notes", textAr: "عامل حالك بتكتب نوتس", checked: false },
-  { id: 12, textEn: "FREE SPACE (Coffee)", textAr: "مساحة مجانية (قهوة)", checked: true }, // Center
-  { id: 13, textEn: "Argued about parking", textAr: "تهاوشت على مصف", checked: false },
-  { id: 14, textEn: "Skipped Thursday", textAr: "غبت يوم الخميس", checked: false },
-  { id: 15, textEn: "Cat on campus", textAr: "شفت بسة بالجامعة", checked: false },
-  { id: 16, textEn: "Ordered food during lecture", textAr: "طلبت أكل بالمحاضرة", checked: false },
-  { id: 17, textEn: "Forgot assignment deadline", textAr: "نسيت تسليم الواجب", checked: false },
-  { id: 18, textEn: "Group project drama", textAr: "دراما مشروع التخرج", checked: false },
-  { id: 19, textEn: "Library for sleeping", textAr: "المكتبة للنوم فقط", checked: false },
-  { id: 20, textEn: "Failed first quiz", textAr: "رسبت بأول كويز", checked: false },
-  { id: 21, textEn: "Borrowed a pen", textAr: "سرقت قلم (استعرت)", checked: false },
-  { id: 22, textEn: "Stuck in Amman Traffic", textAr: "علقت بأزمة عمان", checked: false },
-  { id: 23, textEn: "Phone battery 1%", textAr: "شحن تلفونك ١٪", checked: false },
-  { id: 24, textEn: "Saw high school friend", textAr: "شفت صاحبك من المدرسة", checked: false },
-  { id: 25, textEn: "Actually studied", textAr: "درست عنجد", checked: false },
-];
+const MENU_PLACEHOLDER = "https://placehold.co/400x600/png?text=Restaurant+Menu";
+
+export const UNI_SERVICES_DATA: { [key: string]: UniServices } = {
+    'just': {
+        restaurants: [
+            { nameEn: "Jupiter Shawerma", nameAr: "شاورما المشتري", phone: "0791234567", type: 'shawerma', rating: "4.8 ⭐", logo: "https://ui-avatars.com/api/?name=JS&background=FCD34D&color=000", menu: MENU_PLACEHOLDER },
+            { nameEn: "Engineering Cafeteria", nameAr: "كافتيريا الهندسة", phone: "N/A", type: 'other', rating: "3.5 ⭐", logo: "https://ui-avatars.com/api/?name=EC&background=E5E7EB&color=000" },
+            { nameEn: "Gate Coffee", nameAr: "قهوة البوابة", phone: "0788888888", type: 'coffee', rating: "4.5 ⭐", logo: "https://ui-avatars.com/api/?name=GC&background=78350F&color=fff", menu: MENU_PLACEHOLDER },
+            { nameEn: "Khumasi Restaurant", nameAr: "مطعم الخماسي", phone: "0777777777", type: 'burger', rating: "4.2 ⭐", logo: "https://ui-avatars.com/api/?name=KR&background=EF4444&color=fff" },
+            { nameEn: "Cyber Cafe", nameAr: "كافيه السايبر", phone: "N/A", type: 'coffee', rating: "4.0 ⭐", logo: "https://ui-avatars.com/api/?name=CC&background=3B82F6&color=fff" }
+        ],
+        contacts: [
+            { nameEn: "University Security", nameAr: "الأمن الجامعي", phone: "027201000" },
+            { nameEn: "Health Center", nameAr: "المركز الصحي", phone: "027201000" },
+            { nameEn: "Admission & Reg", nameAr: "القبول والتسجيل", phone: "027201000" }
+        ],
+        busRoutes: [
+            { nameEn: "Amman Express", nameAr: "خط عمان السريع", stops: "North Gate -> 7th Circle -> Mujamma" },
+            { nameEn: "Irbid Shuttle", nameAr: "تردد إربد", stops: "Eng Gate -> Mujamma Al-Shamal" }
+        ]
+    },
+    'uj': {
+        restaurants: [
+            { nameEn: "Abu Jbara (Near Gate)", nameAr: "أبو جبارة (عند البوابة)", phone: "0799999999", type: 'other', rating: "4.9 ⭐", logo: "https://ui-avatars.com/api/?name=AJ&background=16A34A&color=fff", menu: MENU_PLACEHOLDER },
+            { nameEn: "Humanities Coffee", nameAr: "قهوة الآداب", phone: "N/A", type: 'coffee', rating: "4.7 ⭐", logo: "https://ui-avatars.com/api/?name=HC&background=92400E&color=fff" },
+            { nameEn: "University St. Shawerma", nameAr: "شاورما شارع الجامعة", phone: "0790000000", type: 'shawerma', rating: "4.3 ⭐", logo: "https://ui-avatars.com/api/?name=US&background=F59E0B&color=fff", menu: MENU_PLACEHOLDER },
+            { nameEn: "Student Union Cafe", nameAr: "كافيه الاتحاد", phone: "N/A", type: 'coffee', rating: "3.9 ⭐", logo: "https://ui-avatars.com/api/?name=SU&background=3B82F6&color=fff" }
+        ],
+        contacts: [
+            { nameEn: "Registration", nameAr: "التسجيل", phone: "065355000" },
+            { nameEn: "Hospital (JUH)", nameAr: "مستشفى الجامعة", phone: "065353666" }
+        ],
+        busRoutes: [
+            { nameEn: "Sweileh Bus", nameAr: "باص صويلح", stops: "Main Gate -> Sweileh" },
+            { nameEn: "Internal Shuttle", nameAr: "التردد الداخلي", stops: "Clock Tower -> Dorms -> North Gate" }
+        ]
+    },
+    'yu': {
+        restaurants: [
+            { nameEn: "University St. Snacks", nameAr: "سناكات شارع الجامعة", phone: "0781111111", type: 'other', rating: "4.4 ⭐", logo: "https://ui-avatars.com/api/?name=SS&background=EC4899&color=fff" },
+            { nameEn: "Economy Fac. Coffee", nameAr: "قهوة الاقتصاد", phone: "N/A", type: 'coffee', rating: "4.1 ⭐", logo: "https://ui-avatars.com/api/?name=EC&background=10B981&color=fff" }
+        ],
+        contacts: [
+            { nameEn: "Admission", nameAr: "التسجيل", phone: "027211111" }
+        ],
+        busRoutes: [
+            { nameEn: "Amman Bus", nameAr: "باص عمان", stops: "South Gate -> Amman" }
+        ]
+    }
+};
+
+// Fallback for other universities
+export const GENERIC_SERVICES: UniServices = {
+    restaurants: [
+        { nameEn: "Gate Shawerma", nameAr: "شاورما البوابة", phone: "0790000000", type: 'shawerma', rating: "4.5 ⭐", logo: "https://ui-avatars.com/api/?name=GS&background=F59E0B&color=fff", menu: MENU_PLACEHOLDER },
+        { nameEn: "Library Coffee", nameAr: "قهوة المكتبة", phone: "N/A", type: 'coffee', rating: "4.2 ⭐", logo: "https://ui-avatars.com/api/?name=LC&background=78350F&color=fff" },
+        { nameEn: "Falafel Spot", nameAr: "معلم الفلافل", phone: "0780000000", type: 'other', rating: "4.7 ⭐", logo: "https://ui-avatars.com/api/?name=FS&background=16A34A&color=fff" }
+    ],
+    contacts: [
+        { nameEn: "Student Affairs", nameAr: "شؤون الطلبة", phone: "060000000" },
+        { nameEn: "Security", nameAr: "الأمن", phone: "911" }
+    ],
+    busRoutes: [
+        { nameEn: "Main Route", nameAr: "الخط الرئيسي", stops: "Campus -> City Center" }
+    ]
+};
+
+export const BINGO_DATA = {
+    general: [
+        { id: 1, textEn: "Late to 8 AM lecture", textAr: "تأخرت على محاضرة الـ ٨", checked: false },
+        { id: 2, textEn: "Forgot University ID", textAr: "نسيت الهوية الجامعية", checked: false },
+        { id: 3, textEn: "Ate Mansaf & Slept", textAr: "ضربت منسف ونمت", checked: false },
+        { id: 4, textEn: "Professor cancelled class", textAr: "الدكتور لغى المحاضرة", checked: false },
+        { id: 5, textEn: "Begged for grades", textAr: "تشحد علامات", checked: false },
+        { id: 6, textEn: "Lost in Engineering Bldg", textAr: "ضعت بمبنى الهندسة", checked: false },
+        { id: 7, textEn: "Drank 3+ Coffees", textAr: "شربت ٣ قهاوي وفوق", checked: false },
+        { id: 8, textEn: "Used 'Ya Zame' 50 times", textAr: "حكيت 'يا زلمة' ٥٠ مرة", checked: false },
+        { id: 9, textEn: "Broke (End of month)", textAr: "مفلس (اخر الشهر)", checked: false },
+        { id: 10, textEn: "Bus broke down", textAr: "الباص تعطل", checked: false },
+        { id: 11, textEn: "Pretended to take notes", textAr: "عامل حالك بتكتب نوتس", checked: false },
+        { id: 12, textEn: "FREE SPACE (Coffee)", textAr: "مساحة مجانية (قهوة)", checked: true },
+        { id: 13, textEn: "Argued about parking", textAr: "تهاوشت على مصف", checked: false },
+        { id: 14, textEn: "Skipped Thursday", textAr: "غبت يوم الخميس", checked: false },
+        { id: 15, textEn: "Cat on campus", textAr: "شفت بسة بالجامعة", checked: false },
+        { id: 16, textEn: "Ordered food during lecture", textAr: "طلبت أكل بالمحاضرة", checked: false },
+        { id: 17, textEn: "Forgot assignment deadline", textAr: "نسيت تسليم الواجب", checked: false },
+        { id: 18, textEn: "Group project drama", textAr: "دراما مشروع التخرج", checked: false },
+        { id: 19, textEn: "Library for sleeping", textAr: "المكتبة للنوم فقط", checked: false },
+        { id: 20, textEn: "Failed first quiz", textAr: "رسبت بأول كويز", checked: false },
+        { id: 21, textEn: "Borrowed a pen", textAr: "سرقت قلم (استعرت)", checked: false },
+        { id: 22, textEn: "Stuck in Amman Traffic", textAr: "علقت بأزمة عمان", checked: false },
+        { id: 23, textEn: "Phone battery 1%", textAr: "شحن تلفونك ١٪", checked: false },
+        { id: 24, textEn: "Saw high school friend", textAr: "شفت صاحبك من المدرسة", checked: false },
+        { id: 25, textEn: "Actually studied", textAr: "درست عنجد", checked: false }
+    ],
+    exams: [
+        { id: 1, textEn: "Crying in bathroom", textAr: "بكاء في الحمام", checked: false },
+        { id: 2, textEn: "Calculator died", textAr: "الآلة الحاسبة طفت", checked: false },
+        { id: 3, textEn: "Pulled an All-Nighter", textAr: "سحبتها مواصلة", checked: false },
+        { id: 4, textEn: "Forgot pen", textAr: "نسيت القلم", checked: false },
+        { id: 5, textEn: "Answer was 'C' 5 times", textAr: "الجواب كان (ج) ٥ مرات ورا بعض", checked: false },
+        { id: 6, textEn: "Studied wrong chapter", textAr: "درست الشابتر الغلط", checked: false },
+        { id: 7, textEn: "Exam was 100% external", textAr: "الامتحان من المريخ", checked: false },
+        { id: 8, textEn: "Begged Dr for 1 mark", textAr: "شحدة علامة النجاح", checked: false },
+        { id: 9, textEn: "Slept in exam hall", textAr: "نمت بالقاعة", checked: false },
+        { id: 10, textEn: "Phone rang during exam", textAr: "تلفونك رن بالامتحان", checked: false },
+        { id: 11, textEn: "Left early (Gave up)", textAr: "سلمت الورقة فاضية", checked: false },
+        { id: 12, textEn: "FREE SPACE (Tears)", textAr: "مساحة مجانية (دموع)", checked: true },
+        { id: 13, textEn: "Cheating attempt failed", textAr: "محاولة غش فاشلة", checked: false },
+        { id: 14, textEn: "Dr said 'Exam is Easy'", textAr: "الدكتور حكى الامتحان سهل", checked: false },
+        { id: 15, textEn: "Panic attack", textAr: "نوبة هلع", checked: false },
+        { id: 16, textEn: "Red Bull Overdose", textAr: "تسمم ريد بول", checked: false },
+        { id: 17, textEn: "Forgot ID number", textAr: "نسيت رقمك الجامعي", checked: false },
+        { id: 18, textEn: "Pen exploded", textAr: "القلم انفجر", checked: false },
+        { id: 19, textEn: "Invigilator is scary", textAr: "المراقب بخوف", checked: false },
+        { id: 20, textEn: "Question has no answer", textAr: "السؤال ما اله جواب", checked: false },
+        { id: 21, textEn: "Everyone using ruler (Why?)", textAr: "الكل بيستخدم مسطرة (ليش؟)", checked: false },
+        { id: 22, textEn: "Stomach ache", textAr: "مغص توتر", checked: false },
+        { id: 23, textEn: "Hand cramp", textAr: "تشنج عضلات اليد", checked: false },
+        { id: 24, textEn: "Hall is freezing", textAr: "القاعة فريزر", checked: false },
+        { id: 25, textEn: "Passed by miracle", textAr: "نجحت بالقدرة الإلهية", checked: false }
+    ],
+    online: [
+        { id: 1, textEn: "Forgot to mute mic", textAr: "نسيت المايك فاتح", checked: false },
+        { id: 2, textEn: "Attending from bed", textAr: "بتحضر من التخت", checked: false },
+        { id: 3, textEn: "Internet died", textAr: "النت فصل", checked: false },
+        { id: 4, textEn: "Dr: 'Can you hear me?'", textAr: "دكتور: 'سامعيني؟'", checked: false },
+        { id: 5, textEn: "Mom walked in", textAr: "الحجة دخلت الغرفة", checked: false },
+        { id: 6, textEn: "Camera turned on accidentally", textAr: "الكاميرا فتحت بالغلط", checked: false },
+        { id: 7, textEn: "Eating during class", textAr: "بتوكل عالمحاضرة", checked: false },
+        { id: 8, textEn: "Playing games in bg", textAr: "بتلعب ببجي بالخفاء", checked: false },
+        { id: 9, textEn: "Teams/Zoom update", textAr: "تحديث زووم", checked: false },
+        { id: 10, textEn: "Ghosted breakout room", textAr: "هربت من البريك أوت روم", checked: false },
+        { id: 11, textEn: "Woke up 1 min before", textAr: "صحيت قبل دقيقة", checked: false },
+        { id: 12, textEn: "FREE SPACE (WiFi)", textAr: "مساحة مجانية (واي فاي)", checked: true },
+        { id: 13, textEn: "Recorded lecture (Never watched)", textAr: "سجلت وما حضرت", checked: false },
+        { id: 14, textEn: "System crashed", textAr: "السيستم وقع", checked: false },
+        { id: 15, textEn: "Prof muted himself", textAr: "الدكتور عمل ميوت لحاله", checked: false },
+        { id: 16, textEn: "Someone drawing on screen", textAr: "حدا بشخبط عالشاشة", checked: false },
+        { id: 17, textEn: "Fake attendance", textAr: "كتبت اسمي وطلعت", checked: false },
+        { id: 18, textEn: "Wearing Pajamas", textAr: "لابس بجامة", checked: false },
+        { id: 19, textEn: "No pants", textAr: "بدون بنطلون", checked: false },
+        { id: 20, textEn: "Screenshotted slides", textAr: "صورت الشاشة", checked: false },
+        { id: 21, textEn: "Asked stupid question", textAr: "سألت سؤال غبي", checked: false },
+        { id: 22, textEn: "Browser tabs chaos", textAr: "مليون تاب فاتح", checked: false },
+        { id: 23, textEn: "Laptop fan noise", textAr: "صوت مروحة اللابتوب", checked: false },
+        { id: 24, textEn: "Family fighting in bg", textAr: "طوشة عائلية بالخلفية", checked: false },
+        { id: 25, textEn: "Fell asleep", textAr: "نمت والمايك شغال", checked: false }
+    ]
+};
+
+export const INITIAL_BINGO: BingoCell[] = BINGO_DATA.general;
 
 export const INITIAL_TIPS: SurvivalTip[] = [
   {
@@ -54,6 +183,20 @@ export const INITIAL_TIPS: SurvivalTip[] = [
     contentEn: "When you don't know the answer, write clearly and confidently. Confusion is key.",
     contentAr: "لما ما تعرف الجواب، اكتب بخط واضح وبثقة. الخربطة هي مفتاح النجاح."
   },
+  {
+    category: 'money',
+    titleEn: "End of Month Survival",
+    titleAr: "نجاة آخر الشهر",
+    contentEn: "Indomie is a full meal. Water is a beverage. Walking is transportation.",
+    contentAr: "الإندومي وجبة كاملة. المي عصير. المشي مواصلات."
+  },
+  {
+    category: 'social',
+    titleEn: "The 'Ya Zame' Effect",
+    titleAr: "تأثير 'يا زلمة'",
+    contentEn: "Using 'Ya Zame' at the start of a sentence increases persuasion by 50%.",
+    contentAr: "استخدام 'يا زلمة' ببداية الجملة بزيد نسبة الإقناع ٥٠٪."
+  }
 ];
 
 export const STICKERS: Sticker[] = [
@@ -66,15 +209,19 @@ export const STICKERS: Sticker[] = [
 ];
 
 export const FOOD_ITEMS: FoodItem[] = [
-    { id: 'shawerma', nameEn: 'Shawerma', nameAr: 'شاورما', icon: '🌯', color: '#FCD34D' },
-    { id: 'mansaf', nameEn: 'Mansaf Cup', nameAr: 'كاسة منسف', icon: '🍚', color: '#FCA5A5' },
-    { id: 'zinger', nameEn: 'Zinger Sandwich', nameAr: 'ساندويش زنجر', icon: '🍔', color: '#FDBA74' },
-    { id: 'falafel', nameEn: 'Falafel', nameAr: 'فلافل', icon: '🧆', color: '#86EFAC' },
-    { id: 'indomie', nameEn: 'Indomie', nameAr: 'إندومي', icon: '🍜', color: '#FDE047' },
-    { id: 'coffee', nameEn: 'Iced Coffee', nameAr: 'آيس كوفي', icon: '🥤', color: '#D4D4D8' },
+    { id: 'shawerma', nameEn: 'Shawerma', nameAr: 'شاورما', icon: '🌯', color: '#FCD34D', isCheap: true },
+    { id: 'mansaf', nameEn: 'Mansaf Cup', nameAr: 'كاسة منسف', icon: '🍚', color: '#FCA5A5', isCheap: true },
+    { id: 'zinger', nameEn: 'Zinger Sandwich', nameAr: 'ساندويش زنجر', icon: '🍔', color: '#FDBA74', isCheap: true },
+    { id: 'falafel', nameEn: 'Falafel', nameAr: 'فلافل', icon: '🧆', color: '#86EFAC', isCheap: true },
+    { id: 'indomie', nameEn: 'Indomie', nameAr: 'إندومي', icon: '🍜', color: '#FDE047', isCheap: true },
+    { id: 'coffee', nameEn: 'Iced Coffee', nameAr: 'آيس كوفي', icon: '🥤', color: '#D4D4D8', isCheap: true },
+    { id: 'burger', nameEn: 'Fancy Burger', nameAr: 'برجر فخم', icon: '🍔', color: '#F87171', isCheap: false },
+    { id: 'sushi', nameEn: 'Sushi', nameAr: 'سوشي', icon: '🍣', color: '#F472B6', isCheap: false },
+    { id: 'steak', nameEn: 'Steak', nameAr: 'ستيك', icon: '🥩', color: '#EF4444', isCheap: false },
+    { id: 'pasta', nameEn: 'Alfredo Pasta', nameAr: 'باستا ألفريدو', icon: '🍝', color: '#FCD34D', isCheap: false },
 ];
 
-export const TRANSLATIONS = {
+export const TRANSLATIONS: { [key: string]: Translation } = {
   en: {
     title: "Fun Student Pack",
     subtitle: "The survival kit for Jordanian Students",
@@ -94,6 +241,7 @@ export const TRANSLATIONS = {
     generateNew: "Ask AI for New Content",
     score: "Score",
     download: "Download Pack",
+    saveImage: "Download Image",
     aiStudio: "AI Studio",
     sketchGen: "Sketch Generator",
     enterPrompt: "Enter a funny situation (e.g., Cat studying engineering)",
@@ -126,6 +274,186 @@ export const TRANSLATIONS = {
     dashboard: "Dashboard",
     memeTopicLabel: "Meme Topic",
     memeTopicPlaceholder: "e.g., Mansaf, Traffic, Exams...",
+    proPack: "Pro Pack",
+    unlockPro: "Unlock Pro Features",
+    locked: "LOCKED",
+    projectGenie: "Project Genie",
+    crushCalc: "Crush Calculator",
+    outfitRater: "Outfit Rater",
+    cvBuilder: "Wasta-Free CV",
+    buyNow: "Unlock Now - 5 JOD",
+    proDescription: "Get access to Project Generator, Crush Calculator, and more!",
+    // Project Genie
+    projectMajor: "Your Major",
+    projectInterests: "Interests / Keywords",
+    projectInterestsPlaceholder: "e.g. AI, Traffic, Renewable Energy",
+    generateIdeas: "Generate Project Ideas",
+    ideasResult: "Approved Ideas",
+    // Crush Calc
+    yourName: "Your Name",
+    crushName: "Crush's Name",
+    calcLove: "Calculate Chances",
+    loveScore: "Compatibility Score",
+    uploadOutfit: "Upload Outfit Photo",
+    rateFit: "Judge My Fit",
+    judgeMe: "Judge Me",
+    major: "Major",
+    skills: "Actual Skills",
+    skillsPlaceholder: "e.g., Sleeping, Netflix, Procrastination",
+    generateCV: "Make me Professional",
+    cvResult: "Wasta-Free Summary",
+    // Roast
+    scheduleRoaster: "Roast My Schedule",
+    pasteSchedule: "Describe your schedule (e.g., Sunday 8 AM, Thursday 5 PM, 3 hour gap)",
+    roastMySchedule: "Roast Me",
+    roastResult: "The Verdict",
+    // Dorm Chef
+    dormChef: "Dorm Chef",
+    ingredients: "What ingredients do you have?",
+    ingredientsPlaceholder: "e.g., Indomie, Tuna, Ketchup, Old Bread",
+    cookSomething: "Cook Something Gourmet",
+    chefResult: "Chef's Recommendation",
+    // Nerd Corner
+    nerdCorner: "The Nerd Corner",
+    smartSummarizer: "Smart Summarizer",
+    summarizerDesc: "Convert messy lecture notes into clear, structured summaries.",
+    pasteNotes: "Paste your lecture notes here...",
+    summarizeBtn: "Summarize Like a Pro",
+    summaryResult: "Smart Summary",
+    examSimulator: "Exam Simulator",
+    examDesc: "Generate a mock exam to test yourself before the real thing.",
+    examTopic: "Subject / Topic",
+    examTopicPlaceholder: "e.g., Calculus 2, Biology 101, History of Jordan",
+    generateExam: "Create Exam",
+    showAnswer: "Show Answer",
+    // Elite Zone
+    eliteZone: "The Elite Zone",
+    eliteZoneDesc: "Advanced AI tools tailored for the top 1%. Deep dive into complex concepts and challenge your intellect.",
+    conceptSimplifier: "The Concept Simplifier",
+    debateArena: "Debate Arena",
+    simplifyConcept: "Explain this Concept",
+    complexityLevel: "Complexity Level",
+    levelChild: "Like I'm 5",
+    levelStudent: "University Student",
+    levelExpert: "PhD Professor",
+    explainBtn: "Simplify It",
+    debateTopic: "Your Argument / Thesis",
+    debateTopicPlaceholder: "e.g., Artificial Intelligence will replace doctors...",
+    startDebate: "Challenge Me",
+    aiCounter: "AI Counter-Argument",
+    debateDesc: "Strengthen your critical thinking. The AI will challenge your arguments.",
+    tryThese: "Try these:",
+    // Executive Suite
+    executiveSuite: "The Executive Suite",
+    executiveDesc: "For the ambitious. Luxury tools to build your professional brand and career roadmap.",
+    linkedInOptimizer: "The Diamond Profile (LinkedIn)",
+    careerRoadmap: "Elite Career Roadmap",
+    currentRole: "Current Status / Major",
+    dreamJob: "Dream Job / Ambition",
+    optimizeProfile: "Optimize My Profile",
+    optimizedResult: "Your Executive Profile",
+    roadmapMajor: "Your Major",
+    generateRoadmap: "Design My Future",
+    roadmapResult: "Strategic 4-Year Plan",
+    // Navigation
+    prevTool: "Previous Tool",
+    nextTool: "Next Tool",
+    backToDash: "Dashboard",
+    // Updated Features
+    bingoMode: "Game Mode",
+    modeGeneral: "Classic University",
+    modeExams: "Exam Week Panic",
+    modeOnline: "Online Lectures",
+    filterAll: "All",
+    filterFood: "Food",
+    filterExam: "Exams",
+    filterMoney: "Money",
+    filterSocial: "Social",
+    quickTemplates: "Quick Templates",
+    templateSick: "Sick Leave",
+    templateGrade: "Grade Review",
+    templateExtension: "Extension Request",
+    difficulty: "Difficulty",
+    diffEasy: "Easy",
+    diffMedium: "Medium",
+    diffHard: "Nightmare",
+    budgetLabel: "Budget",
+    budgetBroke: "Broke (End of Month)",
+    budgetRich: "Rich (Start of Month)",
+    // Content & Share
+    contentLang: "Content Language",
+    shareWhatsApp: "Share on WhatsApp",
+    shareCopy: "Copy Text",
+    copied: "Copied!",
+    // NEW PREMIUM
+    roommateContract: "Roommate Contract",
+    contractDesc: "Generate a funny yet binding agreement to prevent dorm wars.",
+    badHabits: "Roommate's Bad Habits",
+    badHabitsPlaceholder: "e.g. Snores loud, doesn't wash dishes, steals my Indomie",
+    generateContract: "Draft Contract",
+    instaCaptions: "Insta-Caption Pro",
+    photoDesc: "Describe your photo",
+    photoDescPlaceholder: "e.g. Drinking coffee at the library while failing",
+    generateCaptions: "Generate Viral Captions",
+    dreamInterpreter: "Dream Interpreter",
+    dreamDesc: "Interpret your university anxiety dreams.",
+    dreamPlaceholder: "e.g. I dreamed I was taking an exam naked and my pen exploded.",
+    interpretDream: "Interpret My Dream",
+    // Coffee Reader
+    coffeeReader: "Coffee Cup Reader",
+    uploadCoffee: "Upload Your Coffee Cup",
+    readingFortune: "Reading Fortune...",
+    yourFortune: "Your Fortune",
+    // Uni Hub
+    uniHub: "My Vibe",
+    uniHubDesc: "Your ultimate hookup for everything.",
+    foodCoffee: "Food & Coffee",
+    contacts: "Key Contacts",
+    transport: "Transport",
+    tools: "Tools",
+    callNow: "Call",
+    absenceCalc: "Absence Calculator",
+    lecturesPerWeek: "Lectures / Week",
+    missedLectures: "Missed So Far",
+    calcAbsence: "Am I Safe?",
+    absenceResult: "Absence Status",
+    safe: "Safe",
+    warning: "Warning",
+    danger: "Danger (Herman)",
+    // New Uni Tools
+    cgpaForecaster: "CGPA Forecaster",
+    currentCGPA: "Current Cumulative GPA",
+    passedHoursLabel: "Passed Hours",
+    semesterGPA: "Expected Semester GPA",
+    semesterHoursLabel: "Semester Hours",
+    calculateEffect: "Calculate Effect",
+    newCGPA: "New Expected CGPA",
+    todoList: "Quick Tasks",
+    addTodo: "Add Task",
+    // Business Listing
+    addBusiness: "Add Your Business",
+    areYouOwner: "Are you a restaurant owner?",
+    listYourBiz: "List your restaurant in UniHub",
+    bizFormTitle: "Business Partner Program",
+    bizNameLabel: "Business Name",
+    bizPhoneLabel: "Phone Number",
+    bizTypeLabel: "Category (e.g. Coffee, Shawerma)",
+    subscriptionPrice: "10 JOD / Month",
+    payAndPublish: "Pay & Publish",
+    listingSuccess: "Business Submitted!",
+    listingSuccessMsg: "Your listing is under review. We will contact you shortly.",
+    // Menu Features
+    viewMenu: "View Menu",
+    menu: "Menu",
+    uploadMenu: "Upload Menu Image",
+    noMenu: "No Menu Available",
+    // Sections
+    sectionEssentials: "Survival Mode",
+    sectionFun: "Fun & Social",
+    sectionStudy: "Study & AI Tools",
+    sectionUniServices: "Academic Tools", 
+    sectionSurvival: "Survival Mode",
+    sectionUniHub: "Luxury World" 
   },
   ar: {
     title: "حزمة الطلاب الطائشة",
@@ -146,6 +474,7 @@ export const TRANSLATIONS = {
     generateNew: "اطلب محتوى جديد",
     score: "النتيجة",
     download: "حمل الحزمة",
+    saveImage: "حمل الصورة",
     aiStudio: "الرسام الذكي",
     sketchGen: "حول أفكارك لرسمة",
     enterPrompt: "اوصف الرسمة اللي ببالك (مثلاً: طالب بدرس بالباص، دكتور بضحك...)",
@@ -178,5 +507,185 @@ export const TRANSLATIONS = {
     dashboard: "الرئيسية",
     memeTopicLabel: "موضوع الميم",
     memeTopicPlaceholder: "مثلاً: منسف، أزمة السير، فاينل...",
+    proPack: "حزمة الدفّيعة",
+    unlockPro: "فتح المزايا المدفوعة",
+    locked: "مقفل",
+    projectGenie: "مارد المشاريع",
+    crushCalc: "مقياس الحب",
+    outfitRater: "كشخة الجامعة",
+    cvBuilder: "CV بدون واسطة",
+    buyNow: "افتح الحزمة - ٥ دنانير",
+    proDescription: "احصل على مارد المشاريع، مقياس الحب، ومزايا حصرية!",
+    // Project Genie
+    projectMajor: "تخصصك",
+    projectInterests: "اهتمامات / كلمات مفتاحية",
+    projectInterestsPlaceholder: "مثلاً: ذكاء اصطناعي، طاقة متجددة، مياه",
+    generateIdeas: "اقترح مشاريع تخرج",
+    ideasResult: "أفكار مشاريع معتمدة",
+    // New
+    yourName: "اسمك",
+    crushName: "اسم الكراش",
+    calcLove: "احسب النسبة",
+    loveScore: "نسبة التوافق",
+    uploadOutfit: "صور الكشخة",
+    rateFit: "قيّم لبستي",
+    judgeMe: "احكم علي",
+    major: "التخصص",
+    skills: "المهارات الحقيقية",
+    skillsPlaceholder: "مثلاً: نوم، نتفلكس، تأجيل دراسة",
+    generateCV: "زبطلي الوضع",
+    cvResult: "ملخص CV فخم",
+    // Roast
+    scheduleRoaster: "بهدل جدولي",
+    pasteSchedule: "اوصف جدولك (مثلاً: أحد ٨ الصبح، خميس ٥ العصر، بريك ٣ ساعات)",
+    roastMySchedule: "بهدلني",
+    roastResult: "الحكم النهائي",
+    // Dorm Chef
+    dormChef: "شيف السكنات",
+    ingredients: "شو المكونات اللي عندك؟",
+    ingredientsPlaceholder: "مثلاً: إندومي، تونة، كاتشب، خبز بايت",
+    cookSomething: "اطبخ اشي فخم",
+    chefResult: "نصيحة الشيف",
+    // Nerd Corner
+    nerdCorner: "زاوية الدحيحة",
+    smartSummarizer: "ملخصات الدحيح",
+    summarizerDesc: "حول خربشات المحاضرة لملخص مرتب ونقاط واضحة.",
+    pasteNotes: "الصق نصوص المحاضرة هون...",
+    summarizeBtn: "لخص يا معلم",
+    summaryResult: "الملخص الذكي",
+    examSimulator: "اصنع امتحانك",
+    examDesc: "اختبر معلوماتك قبل ما تتبهدل بالامتحان الحقيقي.",
+    examTopic: "المادة / الموضوع",
+    examTopicPlaceholder: "مثلاً: كالكولاس ٢، فيزياء ١٠١، تاريخ الأردن",
+    generateExam: "اصنع الامتحان",
+    showAnswer: "أظهر الجواب",
+    // Elite Zone
+    eliteZone: "نادي الأوائل",
+    eliteZoneDesc: "أدوات متقدمة للنخبة (أول 1%). تعمق في المفاهيم المعقدة وتحدى ذكاءك.",
+    conceptSimplifier: "المبسط الذكي (شرحلي)",
+    debateArena: "حلبة النقاش",
+    simplifyConcept: "اشرح هذا المفهوم",
+    complexityLevel: "مستوى التعقيد",
+    levelChild: "زي كأني صف أول",
+    levelStudent: "طالب جامعة",
+    levelExpert: "بروفيسور",
+    explainBtn: "بسطها علي",
+    debateTopic: "رأيك / نظريتك",
+    debateTopicPlaceholder: "مثلاً: الذكاء الاصطناعي سيستبدل الأطباء...",
+    startDebate: "تحداني",
+    aiCounter: "الرد المفحم",
+    debateDesc: "قوي مهاراتك في التفكير النقدي. الذكاء الاصطناعي رح يتحداك.",
+    tryThese: "جرب هدول:",
+    // Executive Suite
+    executiveSuite: "الجناح التنفيذي",
+    executiveDesc: "للطموحين فقط. أدوات فاخرة لبناء علامتك الشخصية ومسارك المهني باحترافية عالية.",
+    linkedInOptimizer: "البروفايل الماسي (LinkedIn)",
+    careerRoadmap: "خارطة طريق النخبة",
+    currentRole: "وضعك الحالي / التخصص",
+    dreamJob: "وظيفة الحلم / الطموح",
+    optimizeProfile: "حسن البروفايل",
+    optimizedResult: "بروفايلك التنفيذي",
+    roadmapMajor: "تخصصك الجامعي",
+    generateRoadmap: "صمم مستقبلي",
+    roadmapResult: "الخطة الاستراتيجية (4 سنوات)",
+    // Navigation
+    prevTool: "الأداة السابقة",
+    nextTool: "الأداة التالية",
+    backToDash: "الرئيسية",
+    // Updated Features
+    bingoMode: "مود اللعبة",
+    modeGeneral: "جامعة كلاسيكي",
+    modeExams: "رعب الامتحانات",
+    modeOnline: "محاضرات أونلاين",
+    filterAll: "الكل",
+    filterFood: "أكل",
+    filterExam: "دراسة",
+    filterMoney: "مصاري",
+    filterSocial: "حياة اجتماعية",
+    quickTemplates: "قوالب جاهزة",
+    templateSick: "إجازة مرضية",
+    templateGrade: "مراجعة علامة",
+    templateExtension: "تمديد واجب",
+    difficulty: "الصعوبة",
+    diffEasy: "سهل",
+    diffMedium: "وسط",
+    diffHard: "كابوس",
+    budgetLabel: "الميزانية",
+    budgetBroke: "طفران (آخر الشهر)",
+    budgetRich: "مدلع (أول الشهر)",
+    // Content & Share
+    contentLang: "لغة المحتوى",
+    shareWhatsApp: "شارك عبر واتساب",
+    shareCopy: "نسخ النص",
+    copied: "تم النسخ!",
+    // NEW PREMIUM
+    roommateContract: "عقد السكنات",
+    contractDesc: "اصنع اتفاقية مضحكة بس ملزمة مع شريك السكن لتجنب الطوش.",
+    badHabits: "عادات الشريك السيئة",
+    badHabitsPlaceholder: "مثلاً: بشخر بصوت عالي، ما بجلي، بسرق إندومي",
+    generateContract: "اكتب العقد",
+    instaCaptions: "كابشنات فخمة",
+    photoDesc: "وصف الصورة",
+    photoDescPlaceholder: "مثلاً: بشرب قهوة بالمكتبة وأنا راسب",
+    generateCaptions: "اقترح كابشنات",
+    dreamInterpreter: "مفسر الأحلام",
+    dreamDesc: "فسر أحلام القلق الجامعية.",
+    dreamPlaceholder: "مثلاً: حلمت إني بقدم امتحان وأنا مش لابس اشي والقلم انفجر.",
+    interpretDream: "فسر الحلم",
+    // Coffee Reader
+    coffeeReader: "قارئة الفنجان",
+    uploadCoffee: "صور فنجانك",
+    readingFortune: "جاري القراءة...",
+    yourFortune: "بصرتك",
+    // Uni Hub
+    uniHub: "متعتي",
+    uniHubDesc: "فزعتك للأكل، الأرقام، والنجاة من الحرمان.",
+    foodCoffee: "أكل وقهوة",
+    contacts: "أرقام مهمة",
+    transport: "مواصلات",
+    tools: "أدوات",
+    callNow: "اتصال",
+    absenceCalc: "حاسبة الغياب",
+    lecturesPerWeek: "عدد المحاضرات بالأسبوع",
+    missedLectures: "عدد الغيابات",
+    calcAbsence: "هل أنا بالسليم؟",
+    absenceResult: "وضع الغياب",
+    safe: "بالسليم",
+    warning: "تحذير!",
+    danger: "حرمان (خطر)",
+    // New Uni Tools
+    cgpaForecaster: "توقع التراكمي",
+    currentCGPA: "المعدل التراكمي الحالي",
+    passedHoursLabel: "الساعات المقطوعة",
+    semesterGPA: "معدل الفصل المتوقع",
+    semesterHoursLabel: "ساعات الفصل",
+    calculateEffect: "احسب التأثير",
+    newCGPA: "التراكمي الجديد المتوقع",
+    todoList: "مهام سريعة",
+    addTodo: "أضف مهمة",
+    // Business Listing
+    addBusiness: "أضف مشروعك",
+    areYouOwner: "هل أنت صاحب مطعم؟",
+    listYourBiz: "انشر مطعمك في دليل الجامعة",
+    bizFormTitle: "برنامج شركاء الجامعة",
+    bizNameLabel: "اسم المطعم/المحل",
+    bizPhoneLabel: "رقم الهاتف",
+    bizTypeLabel: "التصنيف (قهوة، شاورما...)",
+    subscriptionPrice: "١٠ دنانير / شهري",
+    payAndPublish: "ادفع وانشر",
+    listingSuccess: "تم استلام الطلب!",
+    listingSuccessMsg: "مشروعك قيد المراجعة. سنتواصل معك قريباً.",
+    // Menu Features
+    viewMenu: "مشاهدة القائمة",
+    menu: "القائمة",
+    uploadMenu: "تحميل صورة القائمة",
+    noMenu: "لا توجد قائمة حالياً",
+    // Sections
+    sectionEssentials: "أدوات الطالب",
+    sectionFun: "تسلاية وطشات",
+    sectionStudy: "ذكاء ودراسة",
+    sectionUniServices: "أدوات أكاديمية",
+    sectionSurvival: "وضعية النجاة",
+    sectionUniHub: "عالم الرفاهية" 
   }
 };

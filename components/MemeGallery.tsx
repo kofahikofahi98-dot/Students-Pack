@@ -1,9 +1,10 @@
 
+
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS, STICKERS } from '../constants';
 import { generateMemeCaption, generateMemeImage } from '../services/geminiService';
-import { Download, Sparkles, ImagePlus } from 'lucide-react';
+import { Download, Sparkles, ImagePlus, Save } from 'lucide-react';
 
 interface MemeProps {
     lang: Language;
@@ -58,6 +59,47 @@ const MemeGallery: React.FC<MemeProps> = ({ lang }) => {
         setLoading(false);
     }
 
+    const handleDownload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = bgImage;
+
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            if (!ctx) return;
+
+            // Draw Image
+            ctx.drawImage(img, 0, 0);
+
+            // Configure Text
+            const fontSize = canvas.height * 0.1; // 10% of height
+            ctx.font = `900 ${fontSize}px ${lang === 'ar' ? 'Cairo' : 'Impact'}, sans-serif`;
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = fontSize * 0.05;
+            ctx.textAlign = 'center';
+
+            // Draw Top Text
+            ctx.textBaseline = 'top';
+            ctx.strokeText(caption.top, canvas.width / 2, 20);
+            ctx.fillText(caption.top, canvas.width / 2, 20);
+
+            // Draw Bottom Text
+            ctx.textBaseline = 'bottom';
+            ctx.strokeText(caption.bottom, canvas.width / 2, canvas.height - 20);
+            ctx.fillText(caption.bottom, canvas.width / 2, canvas.height - 20);
+
+            // Trigger Download
+            const link = document.createElement('a');
+            link.download = `fun-student-meme-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+    };
+
     return (
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Meme Generator */}
@@ -93,6 +135,7 @@ const MemeGallery: React.FC<MemeProps> = ({ lang }) => {
                         src={bgImage} 
                         alt="Meme Template" 
                         className="w-full h-full object-cover"
+                        crossOrigin="anonymous"
                     />
                     
                     {/* Top Text */}
@@ -130,23 +173,32 @@ const MemeGallery: React.FC<MemeProps> = ({ lang }) => {
                     </div>
                 </div>
 
-                <button 
-                    onClick={handleGenerate}
-                    disabled={loading}
-                    className="w-full bg-jordan-red text-white py-3 rounded-xl font-bold hover:bg-red-700 transition flex justify-center items-center gap-2 shadow-md"
-                >
-                    {loading ? (
-                        <>
-                            <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent"></div>
-                            {t.generating}
-                        </>
-                    ) : (
-                        <>
-                            <ImagePlus size={20} />
-                            {lang === 'ar' ? "اصنع ميم جديد" : "Generate Meme"}
-                        </>
-                    )}
-                </button>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={handleGenerate}
+                        disabled={loading}
+                        className="flex-1 bg-jordan-red text-white py-3 rounded-xl font-bold hover:bg-red-700 transition flex justify-center items-center gap-2 shadow-md"
+                    >
+                        {loading ? (
+                            <>
+                                <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent"></div>
+                                {t.generating}
+                            </>
+                        ) : (
+                            <>
+                                <ImagePlus size={20} />
+                                {lang === 'ar' ? "اصنع ميم جديد" : "Generate Meme"}
+                            </>
+                        )}
+                    </button>
+                    <button 
+                        onClick={handleDownload}
+                        className="bg-gray-800 text-white px-4 rounded-xl font-bold hover:bg-black transition shadow-md"
+                        title={t.saveImage}
+                    >
+                        <Save size={20} />
+                    </button>
+                </div>
             </div>
 
             {/* Stickers Pack */}

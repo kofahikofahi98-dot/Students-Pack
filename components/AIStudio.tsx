@@ -1,8 +1,10 @@
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateStudentSketch } from '../services/geminiService';
-import { Image as ImageIcon, Loader2, Info, Plus, Trash2, Palette, Move, Type } from 'lucide-react';
+import { Image as ImageIcon, Loader2, Info, Plus, Trash2, Palette, Move, Type, Save } from 'lucide-react';
 
 interface StudioProps {
     lang: Language;
@@ -105,6 +107,76 @@ const AIStudio: React.FC<StudioProps> = ({ lang }) => {
         return () => window.removeEventListener('pointerup', handleGlobalUp);
     }, []);
 
+    const handleDownload = () => {
+        if (!resultImage) return;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.src = resultImage;
+
+        img.onload = () => {
+            if (!ctx) return;
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // Draw Base Image
+            ctx.drawImage(img, 0, 0);
+
+            // Draw Layers
+            layers.forEach(layer => {
+                const x = (layer.x / 100) * canvas.width;
+                const y = (layer.y / 100) * canvas.height;
+
+                // Font Config (Scale relative to canvas)
+                const fontSize = canvas.width * 0.05; // 5% of width
+                ctx.font = `bold ${fontSize}px 'Cairo', sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const metrics = ctx.measureText(layer.text);
+                const textWidth = metrics.width;
+                const padding = fontSize * 0.4;
+                const boxHeight = fontSize * 1.5;
+
+                // Draw Background
+                if (layer.bgStyle !== 'none') {
+                    ctx.fillStyle = layer.bgStyle === 'white' 
+                        ? 'rgba(255, 255, 255, 0.9)' 
+                        : 'rgba(0, 0, 0, 0.5)';
+                    
+                    // Draw rounded rect equivalent
+                    ctx.fillRect(
+                        x - textWidth/2 - padding, 
+                        y - boxHeight/2, 
+                        textWidth + padding*2, 
+                        boxHeight
+                    );
+                }
+
+                // Draw Text
+                ctx.fillStyle = layer.bgStyle === 'glass' ? '#FFFFFF' : layer.color;
+                
+                // Add simple shadow for legibility if no background
+                if (layer.bgStyle === 'none') {
+                    ctx.shadowColor = "rgba(0,0,0,0.5)";
+                    ctx.shadowBlur = 4;
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 2;
+                } else {
+                    ctx.shadowColor = "transparent";
+                }
+
+                ctx.fillText(layer.text, x, y);
+            });
+
+            const link = document.createElement('a');
+            link.download = `student-sketch-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+    };
+
     // Text Styles
     const colors = ['#000000', '#FFFFFF', '#CE1126', '#0077E6', '#FFD700', '#10B981'];
     
@@ -158,12 +230,21 @@ const AIStudio: React.FC<StudioProps> = ({ lang }) => {
                 <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-4 border-highlight-yellow animate-fade-in-up">
                     <div className="flex justify-between items-center mb-4">
                         <h4 className="text-xl font-bold text-gray-800">{t.results}</h4>
-                        <button 
-                            onClick={addTextLayer}
-                            className="bg-student-blue text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-bold hover:bg-blue-600 transition"
-                        >
-                            <Plus size={16} /> {t.addTextLayer}
-                        </button>
+                        <div className="flex gap-2">
+                            <button 
+                                onClick={addTextLayer}
+                                className="bg-student-blue text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-bold hover:bg-blue-600 transition"
+                            >
+                                <Plus size={16} /> {t.addTextLayer}
+                            </button>
+                            <button 
+                                onClick={handleDownload}
+                                className="bg-gray-800 text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-bold hover:bg-black transition"
+                                title={t.saveImage}
+                            >
+                                <Save size={16} /> {t.saveImage}
+                            </button>
+                        </div>
                     </div>
                     
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
