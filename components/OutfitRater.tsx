@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { rateOutfit } from '../services/geminiService';
-import { Shirt, Camera, Loader2, Upload, Share2 } from 'lucide-react';
+import { Shirt, Camera, Loader2, Share2 } from 'lucide-react';
 
 interface OutfitProps {
     lang: Language;

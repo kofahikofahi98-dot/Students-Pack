@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { simplifyConcept } from '../services/geminiService';
-import { Lightbulb, Brain, Loader2, Tag, Share2, Atom, Zap } from 'lucide-react';
+import { Lightbulb, Brain, Loader2, Share2, Atom, Zap } from 'lucide-react';
 
 interface SimplifierProps {
     lang: Language;

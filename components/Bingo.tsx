@@ -1,10 +1,8 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import { BingoCell, Language } from '../types';
 import { BINGO_DATA, TRANSLATIONS } from '../constants';
-import { Trophy, RefreshCw, LayoutGrid } from 'lucide-react';
+import { Trophy, RefreshCw } from 'lucide-react';
 
 interface BingoProps {
   lang: Language;

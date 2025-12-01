@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS, FOOD_ITEMS } from '../constants';
-import { Utensils, RotateCcw, DollarSign, Share2 } from 'lucide-react';
+import { Utensils, RotateCcw, Share2 } from 'lucide-react';
 
 interface FoodRouletteProps {
     lang: Language;

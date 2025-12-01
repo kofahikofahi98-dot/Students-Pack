@@ -1,10 +1,9 @@
 
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateStudentSketch } from '../services/geminiService';
-import { Image as ImageIcon, Loader2, Info, Plus, Trash2, Palette, Move, Type, Save } from 'lucide-react';
+import { Image as ImageIcon, Loader2, Info, Plus, Trash2, Move, Type, Save } from 'lucide-react';
 
 interface StudioProps {
     lang: Language;
@@ -32,7 +31,6 @@ const AIStudio: React.FC<StudioProps> = ({ lang }) => {
     // Dragging state
     const containerRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
     const handleGenerate = async () => {
         if (!prompt.trim()) return;
@@ -75,12 +73,6 @@ const AIStudio: React.FC<StudioProps> = ({ lang }) => {
 
         setActiveLayerId(id);
         setIsDragging(true);
-
-        const containerRect = containerRef.current.getBoundingClientRect();
-        // Calculate offset in pixels, but store relative to layer position
-        // This is simplified; usually we want exact cursor offset. 
-        // For simplicity, we just set dragging true and snap center to cursor on move or keep relative.
-        // Let's implement relative drag.
     };
 
     const handlePointerMove = (e: React.PointerEvent) => {

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Language, University } from '../types';
+import { Language } from '../types';
 import { TRANSLATIONS, UNIVERSITIES, UNI_SERVICES_DATA, GENERIC_SERVICES } from '../constants';
 import { Phone, Coffee, Utensils, AlertCircle, Bus, Building2, Calculator, CheckCircle, AlertTriangle, XCircle, CheckSquare, Plus, Trash2, Store, CreditCard, TrendingUp, Eye, Image } from 'lucide-react';
 

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { QuizQuestion, University, Language } from '../types';
 import { UNIVERSITIES, TRANSLATIONS } from '../constants';
 import { generateQuizQuestions } from '../services/geminiService';
-import { RefreshCw, CheckCircle, School, Share2, User, Star } from 'lucide-react';
+import { RefreshCw, CheckCircle, School, Share2, Star } from 'lucide-react';
 
 interface QuizProps {
   lang: Language;

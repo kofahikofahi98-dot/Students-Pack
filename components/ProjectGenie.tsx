@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateProjectIdeas } from '../services/geminiService';
-import { Lightbulb, Rocket, Loader2, Copy, Share2 } from 'lucide-react';
+import { Lightbulb, Rocket, Loader2, Share2 } from 'lucide-react';
 
 interface ProjectProps {
     lang: Language;

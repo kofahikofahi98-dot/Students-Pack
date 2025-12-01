@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
-import { Calculator, AlertTriangle, CheckCircle, Trophy, Ban, Share2 } from 'lucide-react';
+import { Calculator, AlertTriangle, CheckCircle, Trophy, Share2 } from 'lucide-react';
 
 interface GPACalculatorProps {
     lang: Language;

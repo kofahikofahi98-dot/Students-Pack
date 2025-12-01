@@ -1,6 +1,5 @@
 
-
-import { University, QuizQuestion, BingoCell, SurvivalTip, Sticker, FoodItem, Translation, UniServices } from './types';
+import { University, BingoCell, SurvivalTip, Sticker, FoodItem, Translation, UniServices } from './types';
 
 // Using Clearbit Logo API with official domains for real logos
 export const UNIVERSITIES: University[] = [

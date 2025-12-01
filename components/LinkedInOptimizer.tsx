@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { optimizeLinkedIn } from '../services/geminiService';
-import { Linkedin, Sparkles, Loader2, Copy, Briefcase } from 'lucide-react';
+import { Linkedin, Loader2, Copy, Briefcase } from 'lucide-react';
 
 interface LinkedInProps {
     lang: Language;

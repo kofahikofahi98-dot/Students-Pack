@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateDebateCounterpoint } from '../services/geminiService';
-import { Swords, MessageSquare, Loader2, ShieldAlert, Zap, Bot, User, Flame } from 'lucide-react';
+import { Swords, MessageSquare, Loader2, ShieldAlert, Bot, User, Flame } from 'lucide-react';
 
 interface DebateProps {
     lang: Language;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateInstaCaption } from '../services/geminiService';
-import { Instagram, Camera, Loader2, Copy, Share2 } from 'lucide-react';
+import { Instagram, Camera, Loader2, Share2 } from 'lucide-react';
 
 interface InstaProps {
     lang: Language;

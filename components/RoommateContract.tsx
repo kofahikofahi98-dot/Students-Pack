@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateRoommateContract } from '../services/geminiService';
-import { FileSignature, ScrollText, Loader2, Copy, Share2 } from 'lucide-react';
+import { FileSignature, ScrollText, Loader2, Share2 } from 'lucide-react';
 
 interface ContractProps {
     lang: Language;

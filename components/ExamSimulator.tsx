@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Language, ExamQuestion } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { generateMockExam } from '../services/geminiService';
-import { PenTool, CheckCircle, Loader2, BookOpen, BarChart3 } from 'lucide-react';
+import { PenTool, CheckCircle, Loader2, BookOpen } from 'lucide-react';
 
 interface ExamProps {
     lang: Language;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { roastSchedule } from '../services/geminiService';
-import { Calendar, Flame, Loader2, Share2, Copy } from 'lucide-react';
+import { Calendar, Flame, Loader2, Share2 } from 'lucide-react';
 
 interface RoasterProps {
     lang: Language;
