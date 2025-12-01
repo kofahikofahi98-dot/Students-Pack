@@ -1,9 +1,8 @@
 
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { QuizQuestion, SurvivalTip, ExamQuestion } from "../types";
 
-// DIRECT API KEY INTEGRATION FOR GITHUB PAGES
+// DIRECT API KEY INTEGRATION
 const API_KEY = "AIzaSyAlNahJw1UOp2yAAyk8QGCcesrcFl0qcFU";
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
@@ -15,6 +14,14 @@ You use slang like 'Ya Zame', 'Kharafi', 'Taysh', 'Haram', 'Dawweer'.
 You reference Mansaf, traffic circles, buses (Coaster), coffee, and exams.
 Always provide content in both English and Arabic (Jordanian dialect).`;
 
+// Safety Settings to allow for "Roasts" and casual humor without triggering filters
+const SAFETY_SETTINGS = [
+  { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+  { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+  { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+  { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
+];
+
 // --- QUIZ ---
 export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
   try {
@@ -22,6 +29,7 @@ export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
       model: "gemini-2.5-flash",
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
+        safetySettings: SAFETY_SETTINGS,
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
@@ -58,7 +66,7 @@ export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
     const jsonText = response.text || "[]";
     return JSON.parse(jsonText) as QuizQuestion[];
   } catch (error) {
-    console.error("Quiz Error:", error);
+    console.error("Quiz Error Details:", error);
     return [];
   }
 };
@@ -70,6 +78,7 @@ export const generateSurvivalTip = async (): Promise<SurvivalTip | null> => {
       model: "gemini-2.5-flash",
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
+        safetySettings: SAFETY_SETTINGS,
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -102,6 +111,7 @@ export const generateMemeCaption = async (topic?: string): Promise<{ topEn: stri
       model: "gemini-2.5-flash",
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
+        safetySettings: SAFETY_SETTINGS,
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -126,12 +136,14 @@ export const generateMemeImage = async (topic: string): Promise<string | null> =
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash-image",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [
                 { role: 'user', parts: [{ text: `A funny cartoon style meme background image about ${topic}. No text in image.` }] }
             ],
         });
         
-        // Extract base64 image
         for (const part of response.candidates?.[0]?.content?.parts || []) {
             if (part.inlineData) {
                 return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
@@ -149,6 +161,9 @@ export const generateStudentSketch = async (prompt: string): Promise<string | nu
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-image",
+      config: {
+        safetySettings: SAFETY_SETTINGS,
+      },
       contents: [
         {
           role: "user",
@@ -176,6 +191,7 @@ export const generateProfEmail = async (topic: string, recipient: string, desper
       model: "gemini-2.5-flash",
       config: {
         systemInstruction: "You are an expert student email drafter.",
+        safetySettings: SAFETY_SETTINGS,
       },
       contents: [
         {
@@ -187,7 +203,7 @@ export const generateProfEmail = async (topic: string, recipient: string, desper
     return response.text || "";
   } catch (error) {
     console.error("Email Error:", error);
-    return "Error generating email.";
+    return "Error generating email. Please try again.";
   }
 };
 
@@ -196,7 +212,10 @@ export const calculateCrush = async (name1: string, name2: string, lang: 'en' | 
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            config: { systemInstruction: SYSTEM_INSTRUCTION },
+            config: { 
+                systemInstruction: SYSTEM_INSTRUCTION,
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Calculate a funny love compatibility score between ${name1} and ${name2}. Give a percentage and a sarcastic 1-sentence reason. Output language: ${lang}.` }] }]
         });
         return response.text || "0% - Error";
@@ -208,6 +227,9 @@ export const rateOutfit = async (base64Image: string, lang: 'en' | 'ar'): Promis
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [
                 { role: 'user', parts: [
                     { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
@@ -224,13 +246,15 @@ export const generateFullCV = async (major: string, skills: string, lang: 'en' |
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Create a full structured professional CV (Resume) for a student majoring in ${major}. They claim to have these skills (turn them into professional ones): ${skills}. Include: Profile, Education, Skills, and Fake but realistic Academic Projects. Language: ${lang}. Output plain text formatted nicely.` }] }]
         });
         return response.text || "Error generating CV.";
     } catch (e) { return "Error."; }
 }
 
-// Compatibility wrapper for existing component
 export const generateCVSummary = generateFullCV;
 
 // --- SCHEDULE ROASTER ---
@@ -238,7 +262,10 @@ export const roastSchedule = async (schedule: string, lang: 'en' | 'ar'): Promis
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            config: { systemInstruction: SYSTEM_INSTRUCTION },
+            config: { 
+                systemInstruction: SYSTEM_INSTRUCTION,
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Roast this student schedule: ${schedule}. Be mean but funny. Language: ${lang}.` }] }]
         });
         return response.text || "Your schedule is too sad to roast.";
@@ -250,7 +277,10 @@ export const generateDormRecipe = async (ingredients: string, lang: 'en' | 'ar')
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            config: { systemInstruction: SYSTEM_INSTRUCTION },
+            config: { 
+                systemInstruction: SYSTEM_INSTRUCTION,
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Create a 'gourmet' sounding recipe using only these ingredients: ${ingredients}. Give it a fancy name and sarcastic instructions. Language: ${lang}.` }] }]
         });
         return response.text || "Just order Shawerma.";
@@ -262,6 +292,9 @@ export const summarizeLecture = async (notes: string, lang: 'en' | 'ar'): Promis
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Summarize these messy lecture notes into clean, structured bullet points. Highlight key terms. Language: ${lang}. Notes: ${notes}` }] }]
         });
         return response.text || "Error summarizing.";
@@ -274,6 +307,7 @@ export const generateMockExam = async (topic: string, difficulty: 'easy'|'medium
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             config: {
+                safetySettings: SAFETY_SETTINGS,
                 responseMimeType: "application/json",
                 responseSchema: {
                     type: Type.ARRAY,
@@ -298,6 +332,9 @@ export const simplifyConcept = async (concept: string, level: number, lang: 'en'
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Explain the concept "${concept}". Complexity level: ${level}/100 (0=Toddler, 100=PhD). Language: ${lang}. Use analogies.` }] }]
         });
         return response.text || "Error.";
@@ -309,7 +346,10 @@ export const generateDebateCounterpoint = async (argument: string, lang: 'en'|'a
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            config: { systemInstruction: "You are a formidable debate opponent. Challenge arguments logically." },
+            config: { 
+                systemInstruction: "You are a formidable debate opponent. Challenge arguments logically.",
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Counter this argument: "${argument}". Be sharp and critical. Language: ${lang}.` }] }]
         });
         return response.text || "Error.";
@@ -321,6 +361,9 @@ export const optimizeLinkedIn = async (role: string, ambition: string, lang: 'en
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Write a professional LinkedIn Headline and About Section for a student currently: ${role}, aspiring to be: ${ambition}. Use emojis and strong keywords. Language: ${lang}.` }] }]
         });
         return response.text || "Error.";
@@ -332,6 +375,9 @@ export const generateCareerRoadmap = async (major: string, lang: 'en'|'ar'): Pro
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Create a strategic 4-year career roadmap for a ${major} student. Year 1 to Year 4 + Graduation. Focus on skills, internships, and networking. Language: ${lang}.` }] }]
         });
         return response.text || "Error.";
@@ -343,7 +389,10 @@ export const generateRoommateContract = async (habits: string, lang: 'en'|'ar'):
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            config: { systemInstruction: SYSTEM_INSTRUCTION },
+            config: { 
+                systemInstruction: SYSTEM_INSTRUCTION,
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Draft a funny roommate contract addressing these bad habits: ${habits}. Make it sound official but ridiculous. Language: ${lang}.` }] }]
         });
         return response.text || "Error.";
@@ -355,6 +404,9 @@ export const generateInstaCaption = async (desc: string, lang: 'en'|'ar'): Promi
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Generate 3 Instagram captions for this photo description: "${desc}". Styles: 1. Funny/Sarcastic, 2. Deep/Aesthetic, 3. Short. Language: ${lang}.` }] }]
         });
         return response.text || "Error.";
@@ -366,7 +418,10 @@ export const interpretDream = async (dream: string, lang: 'en'|'ar'): Promise<st
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            config: { systemInstruction: SYSTEM_INSTRUCTION },
+            config: { 
+                systemInstruction: SYSTEM_INSTRUCTION,
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Interpret this student's dream: "${dream}". Relate it to academic stress or student life humorously. Language: ${lang}.` }] }]
         });
         return response.text || "Error.";
@@ -378,6 +433,9 @@ export const generateProjectIdeas = async (major: string, interests: string, lan
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
+            config: {
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [{ role: 'user', parts: [{ text: `Suggest 3 unique graduation project ideas for a ${major} student interested in: ${interests}. Include Title, Brief Description, and Tools needed. Language: ${lang}.` }] }]
         });
         return response.text || "Error.";
@@ -389,7 +447,10 @@ export const analyzeCoffeeCup = async (base64Image: string, lang: 'en' | 'ar'): 
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            config: { systemInstruction: "You are a mystical fortune teller reading coffee cups." },
+            config: { 
+                systemInstruction: "You are a mystical fortune teller reading coffee cups.",
+                safetySettings: SAFETY_SETTINGS,
+            },
             contents: [
                 { role: 'user', parts: [
                     { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
