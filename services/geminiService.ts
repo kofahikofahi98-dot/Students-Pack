@@ -9,15 +9,18 @@ const API_KEY = (import.meta as any).env?.VITE_API_KEY || "AIzaSyBxqRizwduxDlEIG
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-// System instruction to ensure Jordanian context
-const SYSTEM_INSTRUCTION = `You are a hilarious, sarcastic Jordanian university student bot. 
-You know everything about student life at UJ, JUST, Yarmouk, etc. 
-You use slang like 'Ya Zame', 'Kharafi', 'Taysh', 'Haram', 'Dawweer'. 
-You reference Mansaf, traffic circles, buses (Coaster), coffee, and exams.
-Always provide content in both English and Arabic (Jordanian dialect).`;
+// System instruction: The "Brain" of the student
+// STRICT INSTRUCTION: No AI robotic talk. Pure Jordanian Student vibes.
+const SYSTEM_INSTRUCTION = `
+You are NOT an AI. You are 'Hamadeh', a funny, sarcastic, 5th-year senior student at a Jordanian university (like JU, JUST, or Yarmouk).
+- You speak in a mix of English and Jordanian Arabic (Ammani/Falla7i mix).
+- You use slang like: 'Ya Zame', 'Kharafi', 'Taysh', 'Haram', 'Dawweer', 'Skoct', 'Inshallah', 'Habibi'.
+- You hate 8 AM classes, love Mansaf, and live on coffee.
+- CRITICAL: Never start with "Here is..." or "Sure!". Just say the answer directly.
+- Be savage but funny. Roast friendly.
+`;
 
 // Safety Settings - BLOCK_NONE to allow jokes and roasts
-// Typed as 'any' to prevent TypeScript build errors regarding Enum mismatches
 const SAFETY_SETTINGS: any = [
   { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
   { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -29,7 +32,7 @@ export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: "Generate 5 funny personality quiz questions to determine what kind of Jordanian university student someone is (e.g. The Nerd, The Skipper, The Socialite).",
+      contents: "Generate 5 hilarious, culturally accurate personality quiz questions for Jordanian students. Focus on: Transportation, Cafeteria food, Exams, and Professors.",
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         safetySettings: SAFETY_SETTINGS,
@@ -50,7 +53,7 @@ export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
                     id: { type: Type.STRING },
                     textEn: { type: Type.STRING },
                     textAr: { type: Type.STRING },
-                    score: { type: Type.INTEGER, description: "1 for Nerd, 2 for Socialite, 3 for Reckless" }
+                    score: { type: Type.INTEGER, description: "1 for Nerd/Da7ee7, 2 for Social/Mukhtar, 3 for Taysh/Reckless" }
                   }
                 }
               }
@@ -71,7 +74,7 @@ export const generateSurvivalTip = async (): Promise<SurvivalTip | null> => {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: "Give me one funny, sarcastic 'Survival Tip' for a Jordanian university student.",
+      contents: "Give me one short, savage 'Survival Tip' for university. Real street smarts only.",
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         safetySettings: SAFETY_SETTINGS,
@@ -98,10 +101,10 @@ export const generateSurvivalTip = async (): Promise<SurvivalTip | null> => {
 
 export const generateMemeCaption = async (topic?: string): Promise<{ topEn: string, bottomEn: string, topAr: string, bottomAr: string } | null> => {
     try {
-        const userTopic = topic ? topic : "failing midterms or being broke in Amman";
+        const userTopic = topic ? topic : "being broke or failing exams";
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Generate a funny meme caption text (top text and bottom text) about: ${userTopic}. keep it short and punchy.`,
+            contents: `Generate a savage meme caption (Top Text & Bottom Text) about: ${userTopic}. It must be relatable to Jordanian students. Short and punchy.`,
             config: {
                 systemInstruction: SYSTEM_INSTRUCTION,
                 safetySettings: SAFETY_SETTINGS,
@@ -126,10 +129,10 @@ export const generateMemeCaption = async (topic?: string): Promise<{ topEn: stri
 export const generateMemeImage = async (topic: string): Promise<string | null> => {
     try {
       const prompt = `
-        A funny, expressive meme template image about: ${topic}.
-        Context: Funny relatable situation.
-        Style: Photorealistic or exaggerated cartoon style typical of memes.
-        CRITICAL: Do NOT generate any text inside the image. The image should be clean so I can add text over it later.
+        A funny, expressive cartoon/meme image about: ${topic}.
+        Style: Exaggerated facial expressions, colorful, 2D vector art style.
+        Background: Simple or solid color.
+        NO TEXT in the image.
       `;
   
       const response = await ai.models.generateContent({
@@ -161,13 +164,12 @@ export const generateMemeImage = async (topic: string): Promise<string | null> =
 
 export const generateStudentSketch = async (prompt: string): Promise<string | null> => {
   try {
+    // FIX: Optimized prompt for better "Student Sketch" results
     const enhancedPrompt = `
-      Create a funny, simple cartoon sketch or sticker.
-      Context: Jordanian University student life.
-      Subject: ${prompt}
-      Style: Hand-drawn, colorful, expressive, sticker-like.
-      CRITICAL INSTRUCTION: Do NOT generate any text, letters, or words inside the image. 
-      The image must be purely visual. If the prompt implies text (e.g., 'a sign'), draw the object blank without writing on it.
+      Draw a funny, hand-drawn doodle style sketch about: ${prompt}.
+      Style: Marker on white paper, cartoonish, thick lines, messy but cute.
+      Like a doodle a student draws in their notebook during a boring lecture.
+      NO TEXT inside the drawing. White background.
     `;
 
     const response = await ai.models.generateContent({
@@ -200,17 +202,17 @@ export const generateStudentSketch = async (prompt: string): Promise<string | nu
 export const generateProfEmail = async (topic: string, recipient: string, desperationLevel: number, contentLang: 'en' | 'ar'): Promise<string> => {
     
     const toneDescription = desperationLevel > 50 
-        ? "Extremely desperate, pleading, slightly dramatic, mentioning difficult circumstances but polite." 
-        : "Professional, formal, respectful, standard university student tone.";
+        ? "Extremely dramatic, begging, using phrases like 'my future depends on this', 'I will clean your office', but technically polite." 
+        : "Standard student email, but slightly lazy.";
     
-    const languageInstruction = contentLang === 'ar' ? "Arabic (Formal but natural for a Jordanian student)" : "English (Professional)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Student Dialect mixed with fake formal)" : "English (Student style)";
 
     const prompt = `
-        Write an email to Professor ${recipient} regarding: ${topic}.
+        Write an email to ${recipient} about: ${topic}.
         Tone: ${toneDescription}
-        Language: ${languageInstruction}
-        Structure: Subject line, Salutation, Body, Closing.
-        Keep it concise.
+        Language: ${langInstr}.
+        Do NOT write "Subject:" or placeholders. Just the email body.
+        Make it sound like a real student wrote it (maybe one typo).
     `;
 
     try {
@@ -218,6 +220,7 @@ export const generateProfEmail = async (topic: string, recipient: string, desper
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
+                systemInstruction: SYSTEM_INSTRUCTION,
                 safetySettings: SAFETY_SETTINGS,
             }
         });
@@ -229,20 +232,19 @@ export const generateProfEmail = async (topic: string, recipient: string, desper
 
 export const generateProjectIdeas = async (major: string, interests: string, contentLang: 'en' | 'ar'): Promise<string> => {
 
-    const langInstr = contentLang === 'ar' ? "Arabic (Academic but clear)" : "English (Academic)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Academic but practical)" : "English (Academic)";
 
     const prompt = `
-        Act as a Senior University Project Advisor.
-        Student Major: ${major}
-        Interests: ${interests}
-        
-        Generate 3 unique, impressive Graduation Project (Capstone) ideas.
-        For each idea, provide:
-        1. Title (Catchy & Professional)
-        2. Brief Description (What problem does it solve?)
-        3. Suggested Tech Stack / Tools
+        Act as a Project Advisor.
+        Major: ${major}. Interests: ${interests}.
+        Give 3 solid Graduation Project ideas.
+        Format:
+        1. Title
+        2. What is it? (1 sentence)
+        3. Tech needed.
         
         Language: ${langInstr}.
+        Make them sound smart enough to get approved but easy enough to finish in 3 months.
     `;
 
     try {
@@ -250,6 +252,7 @@ export const generateProjectIdeas = async (major: string, interests: string, con
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
+                systemInstruction: SYSTEM_INSTRUCTION, // Use the smart persona
                 safetySettings: SAFETY_SETTINGS,
             }
         });
@@ -260,14 +263,13 @@ export const generateProjectIdeas = async (major: string, interests: string, con
 }
 
 export const calculateCrush = async (name1: string, name2: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English (Sarcastic)";
+    const langInstr = contentLang === 'ar' ? "Jordanian Arabic (Sarcastic)" : "English (Sarcastic)";
     const prompt = `
-        Act as a funny Jordanian 'Matchmaker' or 'Khattabeh'.
-        Analyze the names ${name1} and ${name2}.
-        Give a random compatibility percentage (0-100%).
-        Write a funny, sarcastic comment about why they work or fail.
-        Mention things like 'differences in major', 'one lives in Irbid one in Amman', 'family issues'.
-        Keep it short (2 sentences max).
+        You are a matchmaker (Khattabeh).
+        Names: ${name1} + ${name2}.
+        Give a random % score.
+        Then give a ONE sentence roast about why it will fail or succeed.
+        Mention specific Jordanian things (Same bus route, dad is rich, supports Wihdat/Faisaly).
         Language: ${langInstr}.
     `;
     try {
@@ -275,6 +277,7 @@ export const calculateCrush = async (name1: string, name2: string, contentLang: 
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
+                systemInstruction: SYSTEM_INSTRUCTION,
                 safetySettings: SAFETY_SETTINGS,
             }
         });
@@ -285,13 +288,13 @@ export const calculateCrush = async (name1: string, name2: string, contentLang: 
 }
 
 export const rateOutfit = async (imageBase64: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English";
+    const langInstr = contentLang === 'ar' ? "Jordanian Arabic (Funny)" : "English (Funny)";
     const prompt = `
-        Analyze this outfit for a Jordanian university student.
-        Give a score out of 10.
-        Roast it or Compliment it sarcastically.
-        Mention if it looks like they are going to a wedding, the gym, or actually studying.
-        Keep it short.
+        Look at this outfit.
+        Rate it /10.
+        Roast it like a best friend.
+        Is it "Engineering style" (Bad)? "Business style" (Fancy)?
+        Be savage but funny.
         Language: ${langInstr}.
     `;
     try {
@@ -314,31 +317,21 @@ export const rateOutfit = async (imageBase64: string, contentLang: 'en' | 'ar'):
 }
 
 export const generateCVSummary = async (major: string, skills: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    const langInstr = contentLang === 'ar' ? "Arabic (Jordanian Professional Standard)" : "English (Professional Corporate Standard)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Fancy Corporate)" : "English (Fancy Corporate)";
     const prompt = `
-        Act as an Expert Resume Writer and Career Coach for a fresh Jordanian university graduate.
-        User's Major: ${major}.
-        User's Actual (Casual) Skills: ${skills}.
-
-        Task: Create a **FULL Professional CV** content (not just a summary).
-        Translate the user's "lazy" or simple skills into powerful, high-end corporate terminology (e.g., "Good at arguing" -> "Negotiation & Conflict Resolution").
-
-        Structure the CV clearly as follows:
-        1. **Professional Profile**: A strong, ambitious 3-line summary tailored to the major.
-        2. **Education**: ${major} (Bachelor's Degree). Add a generic placeholder for University Name and Graduation Year.
-        3. **Core Competencies**: List 5-7 professional hard and soft skills derived from the user's input, sounded very impressive.
-        4. **Academic Projects / Experience**: Invent 2 realistic, impressive-sounding academic projects or entry-level roles related to the major. Describe them with bullet points using action verbs.
-        5. **Languages**: Arabic (Native), English (Professional Working Proficiency).
-
-        Tone: Extremely professional, polished, high-end.
+        Take these student skills: "${skills}" and Major: "${major}".
+        Rewrite them into a CEO-level CV summary.
+        Exaggerate everything.
+        "Sleeping" -> "Time Management & Restoration Expert".
+        "Argue" -> "High-stakes Negotiation".
         Language: ${langInstr}.
-        Format: Clean text with headings, bullet points, and spacing.
     `;
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
+                systemInstruction: SYSTEM_INSTRUCTION,
                 safetySettings: SAFETY_SETTINGS,
             }
         });
@@ -349,17 +342,11 @@ export const generateCVSummary = async (major: string, skills: string, contentLa
 }
 
 export const roastSchedule = async (schedule: string, contentLang: 'en' | 'ar'): Promise<string> => {
-  const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English (Sarcastic)";
+  const langInstr = contentLang === 'ar' ? "Jordanian Arabic (Savage)" : "English (Savage)";
   const prompt = `
-    Act as a grumpy senior Jordanian student who has seen it all.
-    Analyze this university schedule description: "${schedule}".
-    Roast it mercilessly.
-    Point out: 
-    - 8 AM classes (cruel).
-    - Long gaps (Borj 3a'da).
-    - Late classes (Thursday 5 PM).
-    - No lunch breaks.
-    Keep it funny and sarcastic.
+    Roast this university schedule: "${schedule}".
+    Be mean. Talk about the gaps (Borj), the early classes, the heat, the walking.
+    Make the user regret registering.
     Language: ${langInstr}.
   `;
   try {
@@ -367,6 +354,7 @@ export const roastSchedule = async (schedule: string, contentLang: 'en' | 'ar'):
         model: "gemini-2.5-flash",
         contents: prompt,
         config: {
+            systemInstruction: SYSTEM_INSTRUCTION,
             safetySettings: SAFETY_SETTINGS,
         }
     });
@@ -377,13 +365,11 @@ export const roastSchedule = async (schedule: string, contentLang: 'en' | 'ar'):
 }
 
 export const generateDormRecipe = async (ingredients: string, contentLang: 'en' | 'ar'): Promise<string> => {
-  const langInstr = contentLang === 'ar' ? "Arabic (Sarcastic)" : "English (Sarcastic Fancy)";
+  const langInstr = contentLang === 'ar' ? "Arabic (Chef)" : "English (Chef)";
   const prompt = `
-    Act as a fancy chef (like Gordon Ramsay) but for broke Jordanian students in a dorm.
-    The user has these random ingredients: "${ingredients}".
-    Create a "Gourmet" dish name and description for these items.
-    Example: Indomie + Yogurt -> "Pasta a la Laban with Oriental Spices".
-    Make it sound expensive but acknowledge it's poverty food.
+    Ingredients: "${ingredients}".
+    Create a "Gourmet" meal name and description.
+    Make it sound like a 5-star restaurant dish, but admit it's trash at the end.
     Language: ${langInstr}.
   `;
   try {
@@ -391,6 +377,7 @@ export const generateDormRecipe = async (ingredients: string, contentLang: 'en' 
         model: "gemini-2.5-flash",
         contents: prompt,
         config: {
+            systemInstruction: SYSTEM_INSTRUCTION,
             safetySettings: SAFETY_SETTINGS,
         }
     });
@@ -403,16 +390,14 @@ export const generateDormRecipe = async (ingredients: string, contentLang: 'en' 
 // ---------------- NERD CORNER SERVICES ----------------
 
 export const summarizeLecture = async (text: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    const langInstr = contentLang === 'ar' ? "Arabic (Academic but easy)" : "English (Academic)";
+    const langInstr = contentLang === 'ar' ? "Arabic" : "English";
     const prompt = `
-        You are an 'A' Student (Da7ee7). 
-        Summarize the following lecture notes/text into a clean, structured study guide.
-        - Use bullet points.
-        - Highlight 3-5 'Key Terms' at the beginning.
-        - Keep the tone helpful but smart.
-        - Language: ${langInstr}.
-        
-        Text to summarize: "${text}"
+        Summarize this lecture notes simply.
+        Bullet points.
+        Key definitions.
+        No fluff.
+        Language: ${langInstr}.
+        Text: "${text}"
     `;
     try {
         const response = await ai.models.generateContent({
@@ -429,21 +414,15 @@ export const summarizeLecture = async (text: string, contentLang: 'en' | 'ar'): 
 }
 
 export const generateMockExam = async (topic: string, difficulty: 'easy' | 'medium' | 'hard', contentLang: 'en' | 'ar'): Promise<ExamQuestion[]> => {
-    
-    let difficultyDesc = "Medium difficulty";
-    if (difficulty === 'easy') difficultyDesc = "Easy, straightforward questions";
-    if (difficulty === 'hard') difficultyDesc = "Extremely difficult, tricky questions for top students";
-
     const langInstr = contentLang === 'ar' ? "Arabic" : "English";
-
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: `
-                Generate 3 multiple-choice questions about: ${topic}.
-                Difficulty: ${difficultyDesc}.
-                Context: University level exam.
+                Create 3 multiple choice questions about: ${topic}.
+                Difficulty: ${difficulty}.
                 Language: ${langInstr}.
+                JSON format only.
             `,
             config: {
                 safetySettings: SAFETY_SETTINGS,
@@ -470,22 +449,14 @@ export const generateMockExam = async (topic: string, difficulty: 'easy' | 'medi
 // ---------------- ELITE ZONE SERVICES ----------------
 
 export const simplifyConcept = async (concept: string, level: number, contentLang: 'en' | 'ar'): Promise<string> => {
-    
-    let targetAudience = "University Student";
-    if (level <= 33) targetAudience = "5 year old child (very simple, use analogies)";
-    else if (level >= 67) targetAudience = "PhD Expert (Technical, precise, academic)";
-
-    const langInstr = contentLang === 'ar' ? "Arabic (Clear and Educational)" : "English (Clear and Educational)";
+    const langInstr = contentLang === 'ar' ? "Arabic" : "English";
+    let target = level < 33 ? "a toddler" : level > 66 ? "a PhD student" : "a normal student";
 
     const prompt = `
-        Explain the concept: "${concept}".
-        Target Audience: ${targetAudience}.
+        Explain "${concept}" to ${target}.
+        Use an analogy.
+        Keep it clear.
         Language: ${langInstr}.
-        Goal: Make the user truly understand the core idea.
-        Structure: 
-        1. One sentence definition.
-        2. A real-world analogy/example.
-        3. Why it matters.
     `;
     
     try {
@@ -503,16 +474,12 @@ export const simplifyConcept = async (concept: string, level: number, contentLan
 };
 
 export const generateDebateCounterpoint = async (topic: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    
     const langInstr = contentLang === 'ar' ? "Arabic" : "English";
-
     const prompt = `
-        You are a master debater and critical thinker.
-        User's Argument: "${topic}".
-        Task: Provide a strong, logical counter-argument to challenge this view.
-        Tone: Intellectual, respectful, but challenging (Devil's Advocate).
+        Argument: "${topic}".
+        Destroy this argument logically. Play Devil's Advocate.
+        Be smart, factual, and persuasive.
         Language: ${langInstr}.
-        Keep it to 2-3 paragraphs.
     `;
 
     try {
@@ -530,18 +497,11 @@ export const generateDebateCounterpoint = async (topic: string, contentLang: 'en
 };
 
 export const optimizeLinkedIn = async (role: string, ambition: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    
-    const langInstr = contentLang === 'ar' ? "Arabic (Business Professional)" : "English (Business Professional)";
-
+    const langInstr = contentLang === 'ar' ? "Arabic" : "English";
     const prompt = `
-        Act as a LinkedIn Profile Expert.
-        Current Role: ${role}
-        Ambition: ${ambition}
-        
-        Generate:
-        1. A catchy **Headline** (Use emojis and vertical bars |).
-        2. A compelling **About Section** (Summary) that connects the current role to the ambition using keywords.
-        
+        Role: ${role}. Ambition: ${ambition}.
+        Write a LinkedIn Headline (punchy, use | ) and a Summary (2 paragraphs).
+        Make them sound like a Top 1% Talent.
         Language: ${langInstr}.
     `;
 
@@ -560,18 +520,11 @@ export const optimizeLinkedIn = async (role: string, ambition: string, contentLa
 };
 
 export const generateCareerRoadmap = async (major: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    
-    const langInstr = contentLang === 'ar' ? "Arabic (Strategic)" : "English (Strategic)";
-
+    const langInstr = contentLang === 'ar' ? "Arabic" : "English";
     const prompt = `
-        Create a 4-year strategic career roadmap for a ${major} student.
-        Focus on employability and high-value skills.
-        Structure:
-        - Year 1: Foundations & Exploration
-        - Year 2: Skill Building & Internships
-        - Year 3: Advanced Projects & Networking
-        - Year 4: Job Hunting & Specialization
-        
+        Major: ${major}.
+        Give me a 4-year strategic plan to dominate this field.
+        Focus on money and high status.
         Language: ${langInstr}.
     `;
 
@@ -590,11 +543,12 @@ export const generateCareerRoadmap = async (major: string, contentLang: 'en' | '
 };
 
 export const generateRoommateContract = async (habits: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    const langInstr = contentLang === 'ar' ? "Arabic (Legal but Funny)" : "English (Legal but Funny)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Funny Legal)" : "English (Funny Legal)";
     const prompt = `
-        Draft a "Roommate Agreement" based on these bad habits: "${habits}".
-        Tone: Pseudo-legal, funny, strict but fair.
-        Include "Articles" for Cleaning, Noise, Guests, and Food.
+        Bad Habits: "${habits}".
+        Write a strict Roommate Agreement.
+        Use "Article 1", "Article 2".
+        Punishments for breaking rules should be funny (e.g. buying dinner).
         Language: ${langInstr}.
     `;
     try {
@@ -612,14 +566,13 @@ export const generateRoommateContract = async (habits: string, contentLang: 'en'
 };
 
 export const generateInstaCaption = async (desc: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    const langInstr = contentLang === 'ar' ? "Arabic (Gulf/Levant mix, Trendy)" : "English (Gen Z/Aesthetic)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Trendy)" : "English (Trendy)";
     const prompt = `
-        Generate 3 Instagram captions for a photo about: "${desc}".
-        Styles:
-        1. Short & Aesthetic
-        2. Funny/Relatable
-        3. Quote/Deep
-        Add hashtags.
+        Photo: "${desc}".
+        Give 3 captions: 
+        1. Deep/Cringe
+        2. Funny/Short
+        3. One word + Emoji
         Language: ${langInstr}.
     `;
     try {
@@ -637,11 +590,11 @@ export const generateInstaCaption = async (desc: string, contentLang: 'en' | 'ar
 };
 
 export const interpretDream = async (dream: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    const langInstr = contentLang === 'ar' ? "Arabic (Mystical but Student Context)" : "English (Mystical but Student Context)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Mystical)" : "English (Mystical)";
     const prompt = `
-        Interpret this university student's dream: "${dream}".
-        Relate it to exam stress, fear of failure, or social anxiety.
-        Give a "Prophecy".
+        Dream: "${dream}".
+        Interpret it. Relate it to GPA or exams.
+        Give a funny prophecy.
         Language: ${langInstr}.
     `;
     try {
@@ -659,12 +612,11 @@ export const interpretDream = async (dream: string, contentLang: 'en' | 'ar'): P
 };
 
 export const analyzeCoffeeCup = async (imageBase64: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    
-    const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English";
+    const langInstr = contentLang === 'ar' ? "Jordanian Arabic (Old Woman style)" : "English (Mystical)";
     const prompt = `
-        Act as a fortune teller reading coffee grounds.
-        Analyze the patterns in this coffee cup image.
-        Provide a short, mystical, and slightly funny fortune.
+        Read this coffee cup.
+        Be dramatic. Mention a "trip", a "letter", or a "tall dark stranger".
+        Mention an exam or money.
         Language: ${langInstr}.
     `;
 
