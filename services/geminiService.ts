@@ -1,10 +1,9 @@
 
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { QuizQuestion, SurvivalTip, ExamQuestion } from "../types";
 
-const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+// UPDATED: Use process.env.API_KEY exclusively as per guidelines.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 // System instruction to ensure Jordanian context
 const SYSTEM_INSTRUCTION = `You are a hilarious, sarcastic Jordanian university student bot. 
@@ -14,8 +13,8 @@ You reference Mansaf, traffic circles, buses (Coaster), coffee, and exams.
 Always provide content in both English and Arabic (Jordanian dialect).`;
 
 export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
-  if (!apiKey) {
-    console.warn("No API Key provided, returning mock data simulation.");
+  if (!process.env.API_KEY) {
+    console.warn("No API Key provided.");
     return [];
   }
 
@@ -60,7 +59,7 @@ export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
 };
 
 export const generateSurvivalTip = async (): Promise<SurvivalTip | null> => {
-  if (!apiKey) return null;
+  if (!process.env.API_KEY) return null;
 
   try {
     const response = await ai.models.generateContent({
@@ -90,7 +89,7 @@ export const generateSurvivalTip = async (): Promise<SurvivalTip | null> => {
 };
 
 export const generateMemeCaption = async (topic?: string): Promise<{ topEn: string, bottomEn: string, topAr: string, bottomAr: string } | null> => {
-    if(!apiKey) return null;
+    if(!process.env.API_KEY) return null;
     try {
         const userTopic = topic ? topic : "failing midterms or being broke in Amman";
         const response = await ai.models.generateContent({
@@ -119,7 +118,6 @@ export const generateMemeCaption = async (topic?: string): Promise<{ topEn: stri
 export const generateMemeImage = async (topic: string): Promise<string | null> => {
     if (!process.env.API_KEY) return null;
     try {
-      const aiWithKey = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `
         A funny, expressive meme template image about: ${topic}.
         Context: Funny relatable situation.
@@ -127,7 +125,7 @@ export const generateMemeImage = async (topic: string): Promise<string | null> =
         CRITICAL: Do NOT generate any text inside the image. The image should be clean so I can add text over it later.
       `;
   
-      const response = await aiWithKey.models.generateContent({
+      const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: {
           parts: [
@@ -156,9 +154,6 @@ export const generateMemeImage = async (topic: string): Promise<string | null> =
 export const generateStudentSketch = async (prompt: string): Promise<string | null> => {
   if (!process.env.API_KEY) return null;
   try {
-    const aiWithKey = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
-    // Explicitly instructing the model to avoid text to prevent Arabic rendering issues
     const enhancedPrompt = `
       Create a funny, simple cartoon sketch or sticker.
       Context: Jordanian University student life.
@@ -168,7 +163,7 @@ export const generateStudentSketch = async (prompt: string): Promise<string | nu
       The image must be purely visual. If the prompt implies text (e.g., 'a sign'), draw the object blank without writing on it.
     `;
 
-    const response = await aiWithKey.models.generateContent({
+    const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
         parts: [
@@ -248,7 +243,6 @@ export const generateProjectIdeas = async (major: string, interests: string, con
         });
         return response.text || "Could not generate ideas.";
     } catch (e) {
-        console.error(e);
         return "The Genie is brainstorming... try again.";
     }
 }
@@ -445,7 +439,6 @@ export const generateMockExam = async (topic: string, difficulty: 'easy' | 'medi
         });
         return JSON.parse(response.text || "[]");
     } catch (e) {
-        console.error(e);
         return [];
     }
 }
@@ -477,54 +470,54 @@ export const simplifyConcept = async (concept: string, level: number, contentLan
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text || "المفهوم معقد جداً حتى علي.";
+        return response.text || "Could not explain.";
     } catch (e) {
-        return "حدث خطأ في التبسيط.";
+        return "Error.";
     }
-}
+};
 
 export const generateDebateCounterpoint = async (topic: string, contentLang: 'en' | 'ar'): Promise<string> => {
     if (!process.env.API_KEY) return "Error";
+    
     const langInstr = contentLang === 'ar' ? "Arabic" : "English";
 
     const prompt = `
-        The user believes: "${topic}".
-        Act as a highly intelligent Debater.
-        Provide a strong, logical counter-argument to challenge their view.
-        Point out potential flaws, logical fallacies, or alternative perspectives.
-        Tone: Intellectual, challenging, but respectful.
+        You are a master debater and critical thinker.
+        User's Argument: "${topic}".
+        Task: Provide a strong, logical counter-argument to challenge this view.
+        Tone: Intellectual, respectful, but challenging (Devil's Advocate).
         Language: ${langInstr}.
-        Keep it concise (100 words max).
+        Keep it to 2-3 paragraphs.
     `;
-    
+
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text || "لا يوجد رد حالياً.";
+        return response.text || "I agree with you (Error).";
     } catch (e) {
-        return "الذكاء في استراحة.";
+        return "Thinking error.";
     }
-}
-
-// ---------------- EXECUTIVE SUITE SERVICES ----------------
+};
 
 export const optimizeLinkedIn = async (role: string, ambition: string, contentLang: 'en' | 'ar'): Promise<string> => {
     if (!process.env.API_KEY) return "Error";
-    const langInstr = contentLang === 'ar' ? "Arabic (Professional)" : "English (Professional)";
+    
+    const langInstr = contentLang === 'ar' ? "Arabic (Business Professional)" : "English (Business Professional)";
+
     const prompt = `
-        Act as a high-end Career Consultant for university students.
-        User's Current Role/Major: ${role}
-        User's Ambition/Dream Job: ${ambition}
+        Act as a LinkedIn Profile Expert.
+        Current Role: ${role}
+        Ambition: ${ambition}
         
-        Generate a "Diamond Standard" LinkedIn Profile section in ${langInstr}.
-        Include:
-        1. A powerful, catchy Headline (max 20 words).
-        2. A professional, engaging About Summary (max 100 words).
+        Generate:
+        1. A catchy **Headline** (Use emojis and vertical bars |).
+        2. A compelling **About Section** (Summary) that connects the current role to the ambition using keywords.
         
-        Tone: Corporate, ambitious, professional, polished.
+        Language: ${langInstr}.
     `;
+
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -532,25 +525,27 @@ export const optimizeLinkedIn = async (role: string, ambition: string, contentLa
         });
         return response.text || "Profile optimization failed.";
     } catch (e) {
-        return "Consultant unavailable.";
+        return "Error.";
     }
-}
+};
 
 export const generateCareerRoadmap = async (major: string, contentLang: 'en' | 'ar'): Promise<string> => {
     if (!process.env.API_KEY) return "Error";
-    const langInstr = contentLang === 'ar' ? "Arabic (Professional & Motivational)" : "English (Professional & Motivational)";
+    
+    const langInstr = contentLang === 'ar' ? "Arabic (Strategic)" : "English (Strategic)";
+
     const prompt = `
-        Create a high-value "Executive Career Roadmap" for a university student majoring in: ${major}.
-        Structure it year by year (Year 1 to Year 4).
-        Focus on:
-        - High-impact certifications to get.
-        - Type of internships to aim for.
-        - Soft skills to master.
-        - Strategic networking moves.
+        Create a 4-year strategic career roadmap for a ${major} student.
+        Focus on employability and high-value skills.
+        Structure:
+        - Year 1: Foundations & Exploration
+        - Year 2: Skill Building & Internships
+        - Year 3: Advanced Projects & Networking
+        - Year 4: Job Hunting & Specialization
         
-        Tone: Strategic, high-performance, mentorship.
         Language: ${langInstr}.
     `;
+
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -558,21 +553,17 @@ export const generateCareerRoadmap = async (major: string, contentLang: 'en' | '
         });
         return response.text || "Roadmap generation failed.";
     } catch (e) {
-        return "Strategy team is busy.";
+        return "Error.";
     }
-}
+};
 
-// ---------------- NEW PREMIUM SERVICES ----------------
-
-export const generateRoommateContract = async (badHabits: string, contentLang: 'en' | 'ar'): Promise<string> => {
+export const generateRoommateContract = async (habits: string, contentLang: 'en' | 'ar'): Promise<string> => {
     if (!process.env.API_KEY) return "Error";
-    const langInstr = contentLang === 'ar' ? "Arabic (Jordanian, Funny but official looking)" : "English (Funny but official)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Legal but Funny)" : "English (Legal but Funny)";
     const prompt = `
-        Create a "Roommate Agreement Contract" for university students living in a dorm.
-        The user complains about these bad habits: "${badHabits}".
-        Generate 5 funny but firm rules to address these habits.
-        Format it like a legal contract with "Article 1", "Article 2".
-        Tone: Sarcastic, funny, but useful.
+        Draft a "Roommate Agreement" based on these bad habits: "${habits}".
+        Tone: Pseudo-legal, funny, strict but fair.
+        Include "Articles" for Cleaning, Noise, Guests, and Food.
         Language: ${langInstr}.
     `;
     try {
@@ -580,22 +571,22 @@ export const generateRoommateContract = async (badHabits: string, contentLang: '
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text || "Contract generation failed.";
+        return response.text || "Contract void.";
     } catch (e) {
-        return "Lawyer is asleep.";
+        return "Error.";
     }
-}
+};
 
-export const generateInstaCaption = async (photoDesc: string, contentLang: 'en' | 'ar'): Promise<string> => {
+export const generateInstaCaption = async (desc: string, contentLang: 'en' | 'ar'): Promise<string> => {
     if (!process.env.API_KEY) return "Error";
-    const langInstr = contentLang === 'ar' ? "Arabic (Jordanian slang + Aesthetic)" : "English (Aesthetic + Funny)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Gulf/Levant mix, Trendy)" : "English (Gen Z/Aesthetic)";
     const prompt = `
-        Generate 3 Instagram captions for a photo described as: "${photoDesc}".
-        Context: University student life.
+        Generate 3 Instagram captions for a photo about: "${desc}".
         Styles:
-        1. Funny/Sarcastic
-        2. Deep/Inspirational (Cringe)
-        3. Short/Cool
+        1. Short & Aesthetic
+        2. Funny/Relatable
+        3. Quote/Deep
+        Add hashtags.
         Language: ${langInstr}.
     `;
     try {
@@ -603,19 +594,19 @@ export const generateInstaCaption = async (photoDesc: string, contentLang: 'en' 
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text || "Caption machine broken.";
+        return response.text || "No captions found.";
     } catch (e) {
-        return "No captions today.";
+        return "Error.";
     }
-}
+};
 
 export const interpretDream = async (dream: string, contentLang: 'en' | 'ar'): Promise<string> => {
     if (!process.env.API_KEY) return "Error";
-    const langInstr = contentLang === 'ar' ? "Arabic (Mystical yet student-focused)" : "English (Mystical student focus)";
+    const langInstr = contentLang === 'ar' ? "Arabic (Mystical but Student Context)" : "English (Mystical but Student Context)";
     const prompt = `
-        Interpret this student's dream: "${dream}".
-        Relate the interpretation to university anxiety, grades, professors, or social life.
-        Be funny and slightly dramatic.
+        Interpret this university student's dream: "${dream}".
+        Relate it to exam stress, fear of failure, or social anxiety.
+        Give a "Prophecy".
         Language: ${langInstr}.
     `;
     try {
@@ -623,22 +614,23 @@ export const interpretDream = async (dream: string, contentLang: 'en' | 'ar'): P
             model: "gemini-2.5-flash",
             contents: prompt,
         });
-        return response.text || "Dream is too weird.";
+        return response.text || "Dream unclear.";
     } catch (e) {
-        return "Interpreter is sleeping.";
+        return "Error.";
     }
-}
+};
 
 export const analyzeCoffeeCup = async (imageBase64: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
-    const langInstr = contentLang === 'ar' ? "Jordanian Arabic (Fortune Teller)" : "English (Mystical)";
+    if (!process.env.API_KEY) return "Error: No API Key";
+    
+    const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English";
     const prompt = `
-        Act as a fortune teller reading a coffee cup.
-        Analyze the image provided.
-        Predict the user's future regarding academic success and social life.
-        Be funny and slightly dramatic.
+        Act as a fortune teller reading coffee grounds.
+        Analyze the patterns in this coffee cup image.
+        Provide a short, mystical, and slightly funny fortune.
         Language: ${langInstr}.
     `;
+
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -649,8 +641,9 @@ export const analyzeCoffeeCup = async (imageBase64: string, contentLang: 'en' | 
                 ]
             }
         });
-        return response.text || "Cannot read fortune.";
+        return response.text || "The future is cloudy.";
     } catch (e) {
-        return "The cup is too cloudy.";
+        console.error(e);
+        return "Could not read fortune.";
     }
-}
+};
