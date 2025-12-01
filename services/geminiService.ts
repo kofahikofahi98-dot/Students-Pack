@@ -15,7 +15,8 @@ You reference Mansaf, traffic circles, buses (Coaster), coffee, and exams.
 Always provide content in both English and Arabic (Jordanian dialect).`;
 
 // Safety Settings to allow for "Roasts" and casual humor without triggering filters
-const SAFETY_SETTINGS = [
+// Cast to any to prevent TypeScript build errors regarding Enum types
+const SAFETY_SETTINGS: any = [
   { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
   { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
   { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
