@@ -1,9 +1,13 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { QuizQuestion, SurvivalTip, ExamQuestion } from "../types";
 
 // API Key Configuration
-// The API key must be obtained exclusively from the environment variable process.env.API_KEY.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// We use import.meta.env.VITE_API_KEY for Vite-based projects.
+// A fallback key is provided to ensure the app works immediately for testing/demo purposes.
+const API_KEY = (import.meta as any).env?.VITE_API_KEY || "AIzaSyBxqRizwduxDlEIGDhY5KsmsfhHiH2vhqA";
+
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 // System instruction to ensure Jordanian context
 const SYSTEM_INSTRUCTION = `You are a hilarious, sarcastic Jordanian university student bot. 
