@@ -1,8 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#CE1126">
+    <link rel="manifest" href="./manifest.json">
     <title>Fun Student Pack – حزمة الطلاب الطائشة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
@@ -19,6 +22,25 @@
               'student-blue': '#0077E6',
               'highlight-yellow': '#FFD700',
               'dark-bg': '#1a1a1a',
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-out',
+              'fade-in-up': 'fadeInUp 0.6s ease-out',
+              'bounce-in': 'bounceIn 0.8s cubic-bezier(0.8, 0, 1, 1)',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              bounceIn: {
+                '0%, 100%': { transform: 'scale(0.95)', opacity: '0' },
+                '50%': { transform: 'scale(1.05)', opacity: '1' },
+              }
             }
           }
         }
@@ -28,7 +50,7 @@
       body {
         background-color: #f3f4f6;
       }
-      /* Custom scrollbar for fun vibe */
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -36,14 +58,21 @@
         background: #f1f1f1; 
       }
       ::-webkit-scrollbar-thumb {
-        background: #888; 
+        background: #cbd5e1; 
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #555; 
+        background: #94a3b8; 
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
       }
     </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.2.0",

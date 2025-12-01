@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Language } from './types';
 import { TRANSLATIONS } from './constants';
 import Quiz from './components/Quiz';
@@ -43,9 +44,17 @@ const App: React.FC = () => {
   // Navigation State
   const [activeTab, setActiveTab] = useState<'dashboard' | 'quiz' | 'bingo' | 'guide' | 'memes' | 'studio' | 'gpa' | 'email' | 'food' | 'project' | 'crush' | 'outfit' | 'cv' | 'roast' | 'chef' | 'summarizer' | 'exam' | 'simplifier' | 'debate' | 'linkedin' | 'roadmap' | 'contract' | 'insta' | 'dream' | 'unihub'>('dashboard');
   
-  // Premium State
-  const [isPremium, setIsPremium] = useState(false);
+  // Premium State with Persistence
+  const [isPremium, setIsPremium] = useState<boolean>(() => {
+    const saved = localStorage.getItem('isStudentPackPremium');
+    return saved === 'true';
+  });
+  
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('isStudentPackPremium', isPremium.toString());
+  }, [isPremium]);
 
   const t = TRANSLATIONS[lang];
 
