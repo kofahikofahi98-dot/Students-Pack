@@ -29,6 +29,16 @@ import DreamInterpreter from './components/DreamInterpreter';
 import UniHub from './components/UniHub';
 import { Gamepad2, Brain, BookOpen, Smile, Globe, Palette, Calculator, Mail, Utensils, LayoutGrid, Rocket, Heart, Shirt, FileText, Lock, Calendar, ChefHat, GraduationCap, PenTool, Lightbulb, Swords, Zap, Briefcase, Map, Crown, ChevronLeft, ChevronRight, Home, FileSignature, Instagram, CloudMoon, Building2, Backpack, PartyPopper, School } from 'lucide-react';
 
+// Define Interface to fix TypeScript Error
+interface NavItem {
+    id: string;
+    icon: React.ElementType;
+    label: string;
+    color: string;
+    locked: boolean;
+    img?: string; // Optional property for Elite Zone images
+}
+
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('en');
   // Navigation State
@@ -63,7 +73,7 @@ const App: React.FC = () => {
       setActiveTab(id as any);
   };
 
-  const navItems = [
+  const navItems: NavItem[] = [
     // FREE TOOLS
     { id: 'quiz', icon: Brain, label: t.startQuiz, color: 'bg-purple-100 text-purple-600', locked: false },
     { id: 'bingo', icon: Gamepad2, label: t.playBingo, color: 'bg-pink-100 text-pink-600', locked: false },
