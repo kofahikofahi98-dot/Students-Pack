@@ -22,11 +22,6 @@ const SAFETY_SETTINGS: any = [
 ];
 
 export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
-  if (!process.env.API_KEY) {
-    console.warn("No API Key provided.");
-    return [];
-  }
-
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -69,8 +64,6 @@ export const generateQuizQuestions = async (): Promise<QuizQuestion[]> => {
 };
 
 export const generateSurvivalTip = async (): Promise<SurvivalTip | null> => {
-  if (!process.env.API_KEY) return null;
-
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -100,7 +93,6 @@ export const generateSurvivalTip = async (): Promise<SurvivalTip | null> => {
 };
 
 export const generateMemeCaption = async (topic?: string): Promise<{ topEn: string, bottomEn: string, topAr: string, bottomAr: string } | null> => {
-    if(!process.env.API_KEY) return null;
     try {
         const userTopic = topic ? topic : "failing midterms or being broke in Amman";
         const response = await ai.models.generateContent({
@@ -128,7 +120,6 @@ export const generateMemeCaption = async (topic?: string): Promise<{ topEn: stri
 }
 
 export const generateMemeImage = async (topic: string): Promise<string | null> => {
-    if (!process.env.API_KEY) return null;
     try {
       const prompt = `
         A funny, expressive meme template image about: ${topic}.
@@ -165,7 +156,6 @@ export const generateMemeImage = async (topic: string): Promise<string | null> =
 };
 
 export const generateStudentSketch = async (prompt: string): Promise<string | null> => {
-  if (!process.env.API_KEY) return null;
   try {
     const enhancedPrompt = `
       Create a funny, simple cartoon sketch or sticker.
@@ -204,7 +194,6 @@ export const generateStudentSketch = async (prompt: string): Promise<string | nu
 };
 
 export const generateProfEmail = async (topic: string, recipient: string, desperationLevel: number, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error: No API Key";
     
     const toneDescription = desperationLevel > 50 
         ? "Extremely desperate, pleading, slightly dramatic, mentioning difficult circumstances but polite." 
@@ -235,7 +224,6 @@ export const generateProfEmail = async (topic: string, recipient: string, desper
 }
 
 export const generateProjectIdeas = async (major: string, interests: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "System Error";
 
     const langInstr = contentLang === 'ar' ? "Arabic (Academic but clear)" : "English (Academic)";
 
@@ -268,7 +256,6 @@ export const generateProjectIdeas = async (major: string, interests: string, con
 }
 
 export const calculateCrush = async (name1: string, name2: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English (Sarcastic)";
     const prompt = `
         Act as a funny Jordanian 'Matchmaker' or 'Khattabeh'.
@@ -294,7 +281,6 @@ export const calculateCrush = async (name1: string, name2: string, contentLang: 
 }
 
 export const rateOutfit = async (imageBase64: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English";
     const prompt = `
         Analyze this outfit for a Jordanian university student.
@@ -324,7 +310,6 @@ export const rateOutfit = async (imageBase64: string, contentLang: 'en' | 'ar'):
 }
 
 export const generateCVSummary = async (major: string, skills: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     const langInstr = contentLang === 'ar' ? "Arabic (Jordanian Professional Standard)" : "English (Professional Corporate Standard)";
     const prompt = `
         Act as an Expert Resume Writer and Career Coach for a fresh Jordanian university graduate.
@@ -360,7 +345,6 @@ export const generateCVSummary = async (major: string, skills: string, contentLa
 }
 
 export const roastSchedule = async (schedule: string, contentLang: 'en' | 'ar'): Promise<string> => {
-  if (!process.env.API_KEY) return "Error";
   const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English (Sarcastic)";
   const prompt = `
     Act as a grumpy senior Jordanian student who has seen it all.
@@ -389,7 +373,6 @@ export const roastSchedule = async (schedule: string, contentLang: 'en' | 'ar'):
 }
 
 export const generateDormRecipe = async (ingredients: string, contentLang: 'en' | 'ar'): Promise<string> => {
-  if (!process.env.API_KEY) return "Error";
   const langInstr = contentLang === 'ar' ? "Arabic (Sarcastic)" : "English (Sarcastic Fancy)";
   const prompt = `
     Act as a fancy chef (like Gordon Ramsay) but for broke Jordanian students in a dorm.
@@ -416,7 +399,6 @@ export const generateDormRecipe = async (ingredients: string, contentLang: 'en' 
 // ---------------- NERD CORNER SERVICES ----------------
 
 export const summarizeLecture = async (text: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     const langInstr = contentLang === 'ar' ? "Arabic (Academic but easy)" : "English (Academic)";
     const prompt = `
         You are an 'A' Student (Da7ee7). 
@@ -443,7 +425,6 @@ export const summarizeLecture = async (text: string, contentLang: 'en' | 'ar'): 
 }
 
 export const generateMockExam = async (topic: string, difficulty: 'easy' | 'medium' | 'hard', contentLang: 'en' | 'ar'): Promise<ExamQuestion[]> => {
-    if (!process.env.API_KEY) return [];
     
     let difficultyDesc = "Medium difficulty";
     if (difficulty === 'easy') difficultyDesc = "Easy, straightforward questions";
@@ -485,7 +466,6 @@ export const generateMockExam = async (topic: string, difficulty: 'easy' | 'medi
 // ---------------- ELITE ZONE SERVICES ----------------
 
 export const simplifyConcept = async (concept: string, level: number, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     
     let targetAudience = "University Student";
     if (level <= 33) targetAudience = "5 year old child (very simple, use analogies)";
@@ -519,7 +499,6 @@ export const simplifyConcept = async (concept: string, level: number, contentLan
 };
 
 export const generateDebateCounterpoint = async (topic: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     
     const langInstr = contentLang === 'ar' ? "Arabic" : "English";
 
@@ -547,7 +526,6 @@ export const generateDebateCounterpoint = async (topic: string, contentLang: 'en
 };
 
 export const optimizeLinkedIn = async (role: string, ambition: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     
     const langInstr = contentLang === 'ar' ? "Arabic (Business Professional)" : "English (Business Professional)";
 
@@ -578,7 +556,6 @@ export const optimizeLinkedIn = async (role: string, ambition: string, contentLa
 };
 
 export const generateCareerRoadmap = async (major: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     
     const langInstr = contentLang === 'ar' ? "Arabic (Strategic)" : "English (Strategic)";
 
@@ -609,7 +586,6 @@ export const generateCareerRoadmap = async (major: string, contentLang: 'en' | '
 };
 
 export const generateRoommateContract = async (habits: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     const langInstr = contentLang === 'ar' ? "Arabic (Legal but Funny)" : "English (Legal but Funny)";
     const prompt = `
         Draft a "Roommate Agreement" based on these bad habits: "${habits}".
@@ -632,7 +608,6 @@ export const generateRoommateContract = async (habits: string, contentLang: 'en'
 };
 
 export const generateInstaCaption = async (desc: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     const langInstr = contentLang === 'ar' ? "Arabic (Gulf/Levant mix, Trendy)" : "English (Gen Z/Aesthetic)";
     const prompt = `
         Generate 3 Instagram captions for a photo about: "${desc}".
@@ -658,7 +633,6 @@ export const generateInstaCaption = async (desc: string, contentLang: 'en' | 'ar
 };
 
 export const interpretDream = async (dream: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error";
     const langInstr = contentLang === 'ar' ? "Arabic (Mystical but Student Context)" : "English (Mystical but Student Context)";
     const prompt = `
         Interpret this university student's dream: "${dream}".
@@ -681,7 +655,6 @@ export const interpretDream = async (dream: string, contentLang: 'en' | 'ar'): P
 };
 
 export const analyzeCoffeeCup = async (imageBase64: string, contentLang: 'en' | 'ar'): Promise<string> => {
-    if (!process.env.API_KEY) return "Error: No API Key";
     
     const langInstr = contentLang === 'ar' ? "Jordanian Arabic" : "English";
     const prompt = `
