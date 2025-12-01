@@ -1,5 +1,6 @@
 
-import { GoogleGenAI, Type, Schema } from "@google/genai";
+
+import { GoogleGenAI, Type } from "@google/genai";
 import { QuizQuestion, SurvivalTip, ExamQuestion } from "../types";
 
 // DIRECT API KEY INTEGRATION FOR GITHUB PAGES
