@@ -27,7 +27,7 @@ import RoommateContract from './components/RoommateContract';
 import InstaCaptions from './components/InstaCaptions';
 import DreamInterpreter from './components/DreamInterpreter';
 import UniHub from './components/UniHub';
-import { Gamepad2, Brain, BookOpen, Smile, Download, Globe, Palette, Calculator, Mail, Utensils, LayoutGrid, Rocket, Heart, Shirt, FileText, Lock, Calendar, ChefHat, GraduationCap, PenTool, Lightbulb, Swords, Zap, Briefcase, Map, Crown, ChevronLeft, ChevronRight, Home, FileSignature, Instagram, CloudMoon, Building2, Backpack, PartyPopper, Laptop2, School } from 'lucide-react';
+import { Gamepad2, Brain, BookOpen, Smile, Globe, Palette, Calculator, Mail, Utensils, LayoutGrid, Rocket, Heart, Shirt, FileText, Lock, Calendar, ChefHat, GraduationCap, PenTool, Lightbulb, Swords, Zap, Briefcase, Map, Crown, ChevronLeft, ChevronRight, Home, FileSignature, Instagram, CloudMoon, Building2, Backpack, PartyPopper, School } from 'lucide-react';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('en');

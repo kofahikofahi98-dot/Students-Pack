@@ -1,9 +1,8 @@
 
-
 import React, { useState } from 'react';
 import { Language, University } from '../types';
 import { TRANSLATIONS, UNIVERSITIES, UNI_SERVICES_DATA, GENERIC_SERVICES } from '../constants';
-import { MapPin, Phone, Coffee, Utensils, AlertCircle, Bus, Building2, Calculator, CheckCircle, AlertTriangle, XCircle, ChevronDown, CheckSquare, Plus, Trash2, Store, CreditCard, TrendingUp, FileText, Eye, Image } from 'lucide-react';
+import { Phone, Coffee, Utensils, AlertCircle, Bus, Building2, Calculator, CheckCircle, AlertTriangle, XCircle, CheckSquare, Plus, Trash2, Store, CreditCard, TrendingUp, Eye, Image } from 'lucide-react';
 
 interface UniHubProps {
     lang: Language;
